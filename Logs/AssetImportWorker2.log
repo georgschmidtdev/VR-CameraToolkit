@@ -613,3 +613,33 @@ AssetImportParameters requested are different than current active one (requested
   custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
   custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 7373.250331 seconds.
+  path: ProjectSettings/TagManager.asset
+  artifactKey: Guid(00000000000000003000000000000000) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing ProjectSettings/TagManager.asset using Guid(00000000000000003000000000000000) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1b3999e0b4b48609d5b1ae493ab7ac96') in 0.025711 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 413.323896 seconds.
+  path: Assets/ExampleAssets/Tutorial/Images/1-welcome-screen-image.png
+  artifactKey: Guid(11e34d76fce7843be984510eca5c9139) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ExampleAssets/Tutorial/Images/1-welcome-screen-image.png using Guid(11e34d76fce7843be984510eca5c9139) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '61555ca77dd1391bbf66d12e9c5868d6') in 0.085884 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 73.078923 seconds.
+  path: Assets/ExampleAssets/Materials/Grid.mat
+  artifactKey: Guid(3f9336a53d1d2ea43895699cc52cb411) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ExampleAssets/Materials/Grid.mat using Guid(3f9336a53d1d2ea43895699cc52cb411) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f820f4d752d61b2fcc627ce25b025707') in 0.075345 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 47.671109 seconds.
+  path: Assets/ExampleAssets/Textures/Grid_Light_512x512.png
+  artifactKey: Guid(a5888ab2610a91d40a5deefc40b7bfe4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ExampleAssets/Textures/Grid_Light_512x512.png using Guid(a5888ab2610a91d40a5deefc40b7bfe4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1cabdd40a0ca4be5582da3b55bb5b14d') in 0.028574 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 8.763092 seconds.
+  path: Assets/Materials/Materials/VirtualViewport.mat
+  artifactKey: Guid(5ee66b851865d0348bedfa26410b29aa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Materials/Materials/VirtualViewport.mat using Guid(5ee66b851865d0348bedfa26410b29aa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f0fd8abd621b54958221a641f4696aa5') in 0.014107 seconds 
