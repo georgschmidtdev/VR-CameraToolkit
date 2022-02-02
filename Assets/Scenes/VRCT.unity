@@ -721,6 +721,7 @@ GameObject:
   - component: {fileID: 1675450442}
   - component: {fileID: 1675450441}
   - component: {fileID: 1675450440}
+  - component: {fileID: 1675450443}
   m_Layer: 6
   m_Name: VirtualViewport
   m_TagString: Untagged
@@ -899,6 +900,18 @@ MonoBehaviour:
   additionalOffset: {x: 0, y: 0, z: 0}
   additionalRotation: {x: 0, y: 0, z: 0}
   updateSolvers: 1
+--- !u!114 &1675450443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675450431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a443709b231c3943b03b4a4e4355e31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!850595691 &1703887859
 LightingSettings:
   m_ObjectHideFlags: 0
