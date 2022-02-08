@@ -326,7 +326,6 @@ GameObject:
   m_Component:
   - component: {fileID: 762385909}
   - component: {fileID: 762385911}
-  - component: {fileID: 762385910}
   m_Layer: 6
   m_Name: Viewport Camera
   m_TagString: Untagged
@@ -349,14 +348,6 @@ Transform:
   m_Father: {fileID: 1675450432}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &762385910
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 762385908}
-  m_Enabled: 1
 --- !u!20 &762385911
 Camera:
   m_ObjectHideFlags: 0
@@ -912,6 +903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a443709b231c3943b03b4a4e4355e31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activeObject: {fileID: 1675450431}
 --- !u!850595691 &1703887859
 LightingSettings:
   m_ObjectHideFlags: 0
