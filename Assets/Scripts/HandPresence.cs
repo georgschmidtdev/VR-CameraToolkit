@@ -5,82 +5,61 @@ using UnityEngine.XR;
 
 public class HandPresence : MonoBehaviour
 {
-    private InputDevice leftController;
-    private InputDevice rightController;
-
+    public InputDeviceCharacteristics controllerCharacteristics;
+    public GameObject instancePrefab;
+    
+    private List<InputDevice> controllers = new List<InputDevice>();
+    private GameObject instancedModel;
     private Animator handAnimator;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        InitializeControllers();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!leftController.isValid)
+        if (controllers.Count == 0)
         {
-            InitializeControllers(0);
-        }
-        
-        if (!rightController.isValid)
-        {
-            InitializeControllers(1);
+            InitializeControllers();
         }
 
-        ControllerInputListener();
+        UpdateHandAnimation();
     }
 
-    void InitializeControllers(int controllerId)
+    void InitializeControllers()
     {
-        if (controllerId == 0)
-        {
-            List<InputDevice> leftControllers = new List<InputDevice>();
-            InputDeviceCharacteristics leftControllerCharacteristics = InputDeviceCharacteristics.TrackedDevice | InputDeviceCharacteristics.Left;
-            InputDevices.GetDevicesWithCharacteristics(leftControllerCharacteristics, leftControllers);
+        List<InputDevice> detectedControllers = new List<InputDevice>();
+        InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, detectedControllers);
 
-            if (leftControllers.Count != 0)
+        foreach (var item in detectedControllers)
+        {
+            if (!controllers.Contains(item))
             {
-                leftController = leftControllers[0];
-                Debug.Log(leftController.name + leftController.characteristics);
+                controllers.Add(item);
+                Debug.Log(item.name);
+            }
+
+            instancedModel = Instantiate(instancePrefab, transform);
+            handAnimator = instancedModel.GetComponent<Animator>();
+        }
+    }
+
+    void UpdateHandAnimation()
+    {
+        foreach (var item in controllers)
+        {
+            if (item.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue))
+            {
+                handAnimator.SetFloat("trigger", triggerValue);
+            }
+
+            if (item.TryGetFeatureValue(CommonUsages.grip, out float gripValue))
+            {
+                handAnimator.SetFloat("grip", gripValue);
             }
         }
-
-        if (controllerId == 1)
-        {
-            List<InputDevice> rightControllers = new List<InputDevice>();
-            InputDeviceCharacteristics rightControllerCharacteristics = InputDeviceCharacteristics.TrackedDevice | InputDeviceCharacteristics.Right;
-            InputDevices.GetDevicesWithCharacteristics(rightControllerCharacteristics, rightControllers);
-
-            if (rightControllers.Count != 0)
-            {
-                rightController = rightControllers[0];
-                Debug.Log(rightController.name + rightController.characteristics);
-            }
-        }
-    }
-
-    void ControllerInputListener()
-    {
-        if (rightController.TryGetFeatureValue(CommonUsages.trigger, out float rightTriggerValue))
-        {
-            UpdateHandAnimation(rightTriggerValue);
-        }
-
-        if (rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 rightPrimary2DAxisValues) && rightPrimary2DAxisValues != Vector2.zero)
-        {
-            Debug.Log("Right Analog stick at " + rightPrimary2DAxisValues);
-        }
-
-        if (rightController.TryGetFeatureValue(CommonUsages.gripButton, out bool rightGripButtonValue) && rightGripButtonValue)
-        {
-            Debug.Log("Right grip button pressed");
-        }
-    }
-
-    void UpdateHandAnimation(float value)
-    {
-        
     }
 }
