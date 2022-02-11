@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class LocomotionController : MonoBehaviour
+public class TeleportationController : MonoBehaviour
 {
     public XRController leftTeleportRay;
     public XRController rightTeleportRay;
