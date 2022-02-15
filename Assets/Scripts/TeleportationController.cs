@@ -8,7 +8,7 @@ public class TeleportationController : MonoBehaviour
 {
     public XRController leftTeleportRay;
     public XRController rightTeleportRay;
-    public InputHelpers.Button teleportationActivationButton;
+    public InputHelpers.Button activationButton;
     
     private float activationThreshold = 0.5f;
     
@@ -20,6 +20,7 @@ public class TeleportationController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    // Enable Ray if check comes back as true
     {
         if (leftTeleportRay)
         {
@@ -33,8 +34,9 @@ public class TeleportationController : MonoBehaviour
     }
 
     public bool CheckIfActive(XRController controller)
+    // Check if the assigned button is pressed
     {
-        InputHelpers.IsPressed(controller.inputDevice, teleportationActivationButton, out bool result, activationThreshold);
+        InputHelpers.IsPressed(controller.inputDevice, activationButton, out bool result, activationThreshold);
         return result;
     }
 }
