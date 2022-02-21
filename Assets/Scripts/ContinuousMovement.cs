@@ -10,6 +10,7 @@ public class ContinuousMovement : MonoBehaviour
 
     public float movementSpeedMultiplier = 1.0f;
     public float gravity = -9.81f;
+    public float inputThreshold = 0.2f;
     public LayerMask collisionLayerMask;
     public XRNode inputSource;
 
@@ -62,8 +63,11 @@ public class ContinuousMovement : MonoBehaviour
     // Move the player according to the values of the input "inputAxis" and direction of the headset "headYaw"
     {
         Quaternion headYaw = Quaternion.Euler(0, rig.Camera.transform.eulerAngles.y, 0);
-        Vector3 direction = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
-        character.Move(direction * Time.fixedDeltaTime * movementSpeedMultiplier);
+        if (Mathf.Abs(inputAxis.x) > inputThreshold || Mathf.Abs(inputAxis.y) > inputThreshold)
+        {
+            Vector3 direction = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
+            character.Move(direction * Time.fixedDeltaTime * movementSpeedMultiplier);
+        }
     }
 
     private bool CheckGroundCollision()

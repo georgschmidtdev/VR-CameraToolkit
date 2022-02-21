@@ -31,8 +31,8 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
         if (secondaryInteractor != null && firstInteractorSelecting != null)
         {
             // Change object rotation based on the interactors (controllers) rotation
-            firstInteractorSelecting.transform.rotation = CalculateRotation() * Quaternion.Euler(0, 90, 0);
-
+            //ToDo: 
+            firstInteractorSelecting.transform.rotation = CalculateRotation() * Quaternion.Euler(0f, 90f, 0f);
         }
 
         base.ProcessInteractable(updatePhase);

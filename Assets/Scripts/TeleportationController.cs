@@ -6,8 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class TeleportationController : MonoBehaviour
 {
-    public XRController leftTeleportRay;
-    public XRController rightTeleportRay;
+    public XRController teleportRay;
     public InputHelpers.Button activationButton;
     
     private float activationThreshold = 0.5f;
@@ -22,14 +21,9 @@ public class TeleportationController : MonoBehaviour
     void Update()
     // Enable Ray if check comes back as true
     {
-        if (leftTeleportRay)
+        if (teleportRay)
         {
-            leftTeleportRay.gameObject.SetActive(CheckIfActive(leftTeleportRay));
-        }
-
-        if (rightTeleportRay)
-        {
-            rightTeleportRay.gameObject.SetActive(CheckIfActive(rightTeleportRay));
+            teleportRay.gameObject.SetActive(CheckIfActive(teleportRay));
         }
     }
 
