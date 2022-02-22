@@ -2557,12 +2557,12 @@ MonoBehaviour:
   inputSource: 4
   activationButton: 13
   activationThreshold: 0.2
-  checkpointContainer: {fileID: 0}
+  instanceParent: {fileID: 216746}
   instancePrefab: {fileID: 8603027184953695351, guid: 9442b072b9ef7dd4ca54d24f374e7dbb,
     type: 3}
   checkpointRayMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483959
 --- !u!114 &1833712500
 MonoBehaviour:
   m_ObjectHideFlags: 0
