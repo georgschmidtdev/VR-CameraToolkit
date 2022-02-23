@@ -39,6 +39,7 @@ public class AnimationRecorder : MonoBehaviour
 
         recorder = new GameObjectRecorder(activeObject);
         recorder.BindComponentsOfType<Transform>(activeObject, true);
+        recorder.BindComponentsOfType<Camera>(activeObject, false);
 
         //if (clipName == "")
         //{
