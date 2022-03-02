@@ -1108,6 +1108,7 @@ GameObject:
   - component: {fileID: 477678754}
   - component: {fileID: 477678757}
   - component: {fileID: 477678756}
+  - component: {fileID: 477678758}
   - component: {fileID: 477678755}
   m_Layer: 7
   m_Name: VR Rig
@@ -1269,14 +1270,16 @@ MonoBehaviour:
   activationThreshold: 0.2
   lowerLimit: -0.5
   upperLimit: 0.5
-  radialMenuCanvas: {fileID: 0}
+  radialMenuCanvas: {fileID: 980127364}
   radialMenuItems:
   - {fileID: 253310975}
   - {fileID: 1765511052}
   - {fileID: 1106522476}
   - {fileID: 1179421944}
+  - {fileID: 1593487332}
   defaultColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   highlightedColor: {r: 1, g: 0, b: 0, a: 1}
+  interactionMode: 0
 --- !u!114 &477678756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1313,6 +1316,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeObject: {fileID: 2145354541}
+--- !u!114 &477678758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477678746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba382ed456a91c41bc68c53b7d572f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &499700815 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e48d18018a0ba46c283d9fd9c227e578,

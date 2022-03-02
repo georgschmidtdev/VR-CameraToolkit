@@ -10,6 +10,7 @@ public class ModeManager : MonoBehaviour
     public GameObject rig;
     public XRNode inputDevice;
     public InputHelpers.Button activationButton;
+    public InputHelpers.Button selectionButton;
     public float activationThreshold = 0.2f;
     public float lowerLimit = -0.5f;
     public float upperLimit = 0.5f;
@@ -17,32 +18,36 @@ public class ModeManager : MonoBehaviour
     public List<GameObject> radialMenuItems;
     public Color defaultColor = Color.grey;
     public Color highlightedColor = Color.red;
+    public enum InteractionMode{none, recording, planning, visualizing, exporting};
+    public InteractionMode interactionMode;
 
-    private bool wasPressed = false;
+    private bool wasActivated = false;
+    private bool wasSelected = false;
     private Component recordingScript;
     private Component checkpointScript;
-    private Component teleportScript;
-    private Component movementScript;
+    private Component visualizationScript;
     private Vector2 inputAxis;
     private List<Image> radialMenuSprites = new List<Image>();
     private Image selectedSprite;
+    private Component selectedScript;
 
     // Start is called before the first frame update
     void Start()
     {
         recordingScript = rig.GetComponent("Animation Recorder");
         checkpointScript = rig.GetComponent("Checkpoint Manager");
-        teleportScript = rig.GetComponent("Teleportation Controller");
-        movementScript = rig.GetComponent("Continuous Movement");
+        visualizationScript = rig.GetComponent("Visualization Manager");
+        DeactivateScripts();
 
         radialMenuCanvas.gameObject.SetActive(false);
 
         foreach (var item in radialMenuItems)
         {
-            radialMenuSprites.Add(item.GetComponent<Image>());
+            Image image = item.GetComponent<Image>();
+            radialMenuSprites.Add(image);
         }
 
-        selectedSprite = radialMenuSprites[radialMenuSprites.Count-1];
+        //selectedSprite = radialMenuSprites[radialMenuSprites.Count-1];
     }
 
     // Update is called once per frame
@@ -52,6 +57,7 @@ public class ModeManager : MonoBehaviour
         device.TryGetFeatureValue(CommonUsages.primary2DAxis, out inputAxis);
 
         CheckIfActive(device);
+        CheckIfSelected(device);
         InputSeperation(inputAxis);
 
         if (selectedSprite != null)
@@ -64,15 +70,37 @@ public class ModeManager : MonoBehaviour
     {
         InputHelpers.IsPressed(device, activationButton, out bool isPressed);
         
-        if (isPressed && !wasPressed)
+        if (isPressed && !wasActivated)
         {
-            wasPressed = true;
+            wasActivated = true;
             ToggleVisibility();
             return true;
         }
-        else if (!isPressed && wasPressed)
+        else if (!isPressed && wasActivated)
         {
-            wasPressed = false;
+            wasActivated = false;
+            return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool CheckIfSelected(InputDevice device)
+    {
+        InputHelpers.IsPressed(device, selectionButton, out bool isSelected);
+        
+        if (isSelected && !wasSelected)
+        {
+            wasSelected = true;
+            ActivateScript(interactionMode);
+            ToggleVisibility();
+            return true;
+        }
+        else if (!isSelected && wasSelected)
+        {
+            wasSelected = false;
             return false;
         }
         else
@@ -99,6 +127,7 @@ public class ModeManager : MonoBehaviour
             Debug.Log("Up");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[0];
+            interactionMode = InteractionMode.recording;
         }
 
         else if
@@ -111,6 +140,7 @@ public class ModeManager : MonoBehaviour
             Debug.Log("Down");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[1];
+            interactionMode = InteractionMode.planning;
         }
 
         else if
@@ -123,6 +153,7 @@ public class ModeManager : MonoBehaviour
             Debug.Log("Left");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[2];
+            interactionMode = InteractionMode.visualizing;
         }
 
         else if
@@ -135,12 +166,14 @@ public class ModeManager : MonoBehaviour
             Debug.Log("Right");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[3];
+            interactionMode = InteractionMode.exporting;
         }
 
         else
         {
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[radialMenuSprites.Count-1];
+            interactionMode = InteractionMode.none;
         }
     }
 
@@ -155,5 +188,40 @@ public class ModeManager : MonoBehaviour
         {
             item.color = defaultColor;
         }
+    }
+
+    void ActivateScript(InteractionMode mode)
+    {
+        if (mode == InteractionMode.none)
+        {
+            Debug.Log("Default mode selected");
+        }
+
+        if (mode == InteractionMode.recording)
+        {
+            recordingScript.gameObject.SetActive(true);
+        }
+
+        if (mode == InteractionMode.planning)
+        {
+            checkpointScript.gameObject.SetActive(true);
+        }
+
+        if (mode == InteractionMode.exporting)
+        {
+            Debug.Log("TODO: Export functionality");
+        }
+
+        if (mode == InteractionMode.exporting)
+        {
+            
+        }
+    }
+
+    void DeactivateScripts()
+    {
+        recordingScript.gameObject.SetActive(false);
+        checkpointScript.gameObject.SetActive(false);
+        visualizationScript.gameObject.SetActive(false);
     }
 }
