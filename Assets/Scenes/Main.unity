@@ -1267,6 +1267,8 @@ MonoBehaviour:
   rig: {fileID: 477678746}
   inputDevice: 5
   activationButton: 11
+  selectionButton: 4
+  buttons: 0b00000004000000
   activationThreshold: 0.2
   lowerLimit: -0.5
   upperLimit: 0.5
@@ -1316,6 +1318,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeObject: {fileID: 2145354541}
+  inputDevice: 0
+  startRecordingInput: 21
+  stopRecordingInput: 20
+  deleteRecordingInput: 18
 --- !u!114 &477678758
 MonoBehaviour:
   m_ObjectHideFlags: 0

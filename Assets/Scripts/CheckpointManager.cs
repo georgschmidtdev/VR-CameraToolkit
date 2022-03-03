@@ -17,6 +17,7 @@ public class CheckpointManager : MonoBehaviour
     public GameObject instancePrefab;
     public LayerMask checkpointRayMask;
 
+    private bool scriptIsEnabled = false;
     private bool wasPressed = false;
     private List<GameObject> instancedCheckpoints;
     private Vector3 currentTargetPosition;
@@ -33,11 +34,14 @@ public class CheckpointManager : MonoBehaviour
     {
         InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
         
-        UpdateRayCastHit(currentTargetPosition, checkpointRayMask);
-
-        if (CheckIfActive(device))
+        if (scriptIsEnabled)
         {
-            SetNewCheckpoint();
+            UpdateRayCastHit(currentTargetPosition, checkpointRayMask);
+
+            if (CheckIfActive(device))
+            {
+                SetNewCheckpoint();
+            }
         }
     }
 
@@ -75,5 +79,15 @@ public class CheckpointManager : MonoBehaviour
     .transform));
             currentInstance = instancedCheckpoints[instancedCheckpoints.Count - 1];
         }
+    }
+
+    public void DisableScript()
+    {
+        scriptIsEnabled = false;
+    }
+
+    public void EnableScript()
+    {
+        scriptIsEnabled = true;
     }
 }

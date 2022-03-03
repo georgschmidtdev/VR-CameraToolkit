@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class AnimationRecorder : MonoBehaviour
+// Uses the Unity GameObjectRecorder to capture different properties of a given gameObject
 {
     GameObjectRecorder recorder;
     public GameObject activeObject;
-    string saveLocation = "Assets/Recordings/";
-    string clipName;
-    float framerate = 24f;
+    public XRNode inputDevice;
+    public InputHelpers.Button startRecordingInput;
+    public InputHelpers.Button stopRecordingInput;
+    public InputHelpers.Button deleteRecordingInput;
 
-    string startRecordingKey = "i";
-    string stopRecordingKey = "o";
-    string deleteRecordingKey = "p";
-    string deleteIndexKey = "l";
-
+    private string saveLocation = "Assets/Recordings/";
+    private string clipName;
+    private float framerate = 24f;
+    private string startRecordingKey = "i";
+    private string stopRecordingKey = "o";
+    private string deleteRecordingKey = "p";
+    private string deleteIndexKey = "l";
+    private bool scriptIsEnabled = false;
     private AnimationClip clip;
     private AnimationClip currentClip;
     private bool canRecord = true;
@@ -26,6 +33,7 @@ public class AnimationRecorder : MonoBehaviour
     void Start()
     {
         if (clip == null)
+        // Make sure there is a clip to write to
         {
             CreateNewClip();
         }
@@ -38,7 +46,8 @@ public class AnimationRecorder : MonoBehaviour
         }
 
         recorder = new GameObjectRecorder(activeObject);
-        recorder.BindComponentsOfType<Transform>(activeObject, true);
+        recorder.BindComponentsOfType<Transform>(activeObject, false);
+        recorder.BindComponentsOfType<Camera>(activeObject, false);
 
         //if (clipName == "")
         //{
@@ -48,29 +57,32 @@ public class AnimationRecorder : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(startRecordingKey))
+        if (scriptIsEnabled)
         {
-            StartRecording();
-            Debug.Log("Recording started");
-        }
+            if (Input.GetKeyDown(startRecordingKey))
+            {
+                StartRecording();
+                Debug.Log("Recording started");
+            }
 
-        if (Input.GetKeyDown(stopRecordingKey))
-        {
-            StopRecording();
-            Debug.Log("Recording stopped");
-        }
+            if (Input.GetKeyDown(stopRecordingKey))
+            {
+                StopRecording();
+                Debug.Log("Recording stopped");
+            }
 
-        if (Input.GetKeyDown(deleteRecordingKey))
-        {
-            DeleteRecording();
-            Debug.Log("Recording deleted");
-        }
+            if (Input.GetKeyDown(deleteRecordingKey))
+            {
+                DeleteRecording();
+                Debug.Log("Recording deleted");
+            }
 
-        if (Input.GetKeyDown(deleteIndexKey))
-        {
-            PlayerPrefs.DeleteKey(activeObject.name + "Index");
-            index = 0;
-            Debug.Log("Index reset");
+            if (Input.GetKeyDown(deleteIndexKey))
+            {
+                PlayerPrefs.DeleteKey(activeObject.name + "Index");
+                index = 0;
+                Debug.Log("Index reset");
+            }
         }
     }
 
@@ -133,5 +145,15 @@ public class AnimationRecorder : MonoBehaviour
     private void OnDisable()
     {
         PlayerPrefs.SetInt(activeObject.name + "Index", index);
+    }
+
+    public void DisableScript()
+    {
+        scriptIsEnabled = false;
+    }
+
+    public void EnableScript()
+    {
+        scriptIsEnabled = true;
     }
 }
