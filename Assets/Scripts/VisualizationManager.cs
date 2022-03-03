@@ -20,6 +20,22 @@ public class VisualizationManager : MonoBehaviour
         }
     }
 
+    //  Approach 1:
+    //      Select .anim file
+    //      Instantiate temporary gameObject
+    //      Attach Animation to gameObject
+    //          Offset Animation one frame at a time
+    //          Store the coordinates at each frame
+    //          Destroy object
+    //      Instantiate new gameObject with LineRenderer
+    //      Draw line from stored coordinates
+
+    //  Approach 2:
+    //      Select .anim file
+    //      Read file
+    //      Extract coordinates
+    //      ... (see above)      
+
     public void DisableScript()
     {
         scriptIsEnabled = false;
