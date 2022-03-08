@@ -16,7 +16,7 @@ public class AnimationRecorder : MonoBehaviour
     public InputHelpers.Button stopRecordingInput;
     public InputHelpers.Button deleteRecordingInput;
 
-    private string saveLocation = "Assets/Recordings/";
+    private string saveLocation = "Assets/Resources/Recordings/";
     private string clipName;
     private float framerate = 24f;
     private string startRecordingKey = "i";
@@ -49,10 +49,8 @@ public class AnimationRecorder : MonoBehaviour
         recorder.BindComponentsOfType<Transform>(activeObject, false);
         recorder.BindComponentsOfType<Camera>(activeObject, false);
 
-        //if (clipName == "")
-        //{
-            clipName = activeObject.name + "_animation";
-        //}
+        clipName = activeObject.name + "_animation";
+        clipName = clipName.Replace(" ", "_");
     }
 
     void Update()
