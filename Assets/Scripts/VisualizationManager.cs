@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System.Linq;
 
 public class VisualizationManager : MonoBehaviour
 {
@@ -28,10 +27,10 @@ public class VisualizationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (scriptIsEnabled)
-        //{
-        //    
-        //}
+        if (scriptIsEnabled)
+        {
+            
+        }
 
         if (Input.GetKeyDown("m"))
         {
@@ -57,6 +56,7 @@ public class VisualizationManager : MonoBehaviour
     void LoadAnimation(string path)
     {
         currentAnimationClip = Resources.Load<AnimationClip>(path);
+        currentAnimationClip.legacy = true;
         animationClips.Add(currentAnimationClip);
     }
 
@@ -70,31 +70,9 @@ public class VisualizationManager : MonoBehaviour
 
     void ExtractCoordinates()
     {
-        currentInstance = null;
-
         foreach (var clip in animationClips)
         {
-            currentInstance = Instantiate(prefab);
-            Animation animationComponent = currentInstance.GetComponent<Animation>();
-            Animator animatorComponent = currentInstance.GetComponent<Animator>();
-            animationComponent.AddClip(clip, clip.name);
-            List<Vector3> instanceCoordinates = new List<Vector3>();
             
-
-            for (float i = 0; i <= clip.length; i += (1.0f / clip.frameRate))
-            {
-                float normalizedTime = Mathf.InverseLerp(0f, clip.length, i);
-                Debug.Log(i);
-                animatorComponent.SetTarget(AvatarTarget.Root, normalizedTime);
-                animatorComponent.Play(0, -1, normalizedTime);
-                animatorComponent.Update(i);
-                Vector3 currentCoordinates = animatorComponent.targetPosition;
-                instanceCoordinates.Add(currentCoordinates);
-                Debug.Log(currentCoordinates.x + ", " + currentCoordinates.y + ", "+ currentCoordinates.z);
-            }
-
-            coordinateDictionary.Add(clip.name, instanceCoordinates);  
-            Destroy(currentInstance);
         }
     }
 
