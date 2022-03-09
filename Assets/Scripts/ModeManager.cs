@@ -28,7 +28,7 @@ public class ModeManager : MonoBehaviour
     private bool wasSelected = false;
     private AnimationRecorder recordingScript;
     private CheckpointManager checkpointScript;
-    private VisualizationManager visualizationScript;
+    private AnimationManager animationManagementScript;
     private Vector2 inputAxis;
     private List<Image> radialMenuSprites = new List<Image>();
     private Image selectedSprite;
@@ -39,7 +39,7 @@ public class ModeManager : MonoBehaviour
     {
         recordingScript = GetComponent<AnimationRecorder>();
         checkpointScript = GetComponent<CheckpointManager>();
-        visualizationScript = GetComponent<VisualizationManager>();
+        animationManagementScript = GetComponent<AnimationManager>();
         DeactivateScripts(); // Make sure all function scripts are disabled by default
 
         radialMenuCanvas.gameObject.SetActive(false); // Disable UI for mode selection on startup
@@ -236,7 +236,7 @@ public class ModeManager : MonoBehaviour
 
         if (mode == InteractionMode.visualizing)
         {
-            visualizationScript.EnableScript();
+            animationManagementScript.EnableScript();
             Debug.Log("Visualizing");
         }
     }
@@ -245,6 +245,6 @@ public class ModeManager : MonoBehaviour
     {
         recordingScript.DisableScript();
         checkpointScript.DisableScript();
-        visualizationScript.DisableScript();
+        animationManagementScript.DisableScript();
     }
 }
