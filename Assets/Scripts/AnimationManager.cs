@@ -115,6 +115,7 @@ public class AnimationManager : MonoBehaviour
                 coordinateDictionary.Add(name, coordinates);
                 overrideExistingCoordinates = false;
             }
+            
             else
             {
                 Debug.Log("Entry for " + name + " already exists");
@@ -155,6 +156,7 @@ public class AnimationManager : MonoBehaviour
                 Debug.Log("Visualizer for " + name + " already exists");
             }
         }
+
         else
         {
             GameObject currentVisualizer;
