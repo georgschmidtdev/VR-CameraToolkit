@@ -26,9 +26,9 @@ public class ModeManager : MonoBehaviour
     private InputDevice device;
     private bool wasActivated = false;
     private bool wasSelected = false;
-    private AnimationRecorder recordingScript;
-    private CheckpointManager checkpointScript;
-    private AnimationManager animationManagementScript;
+    private AnimationRecorder animationRecorder;
+    private CheckpointManager checkpointManager;
+    private AnimationManager animationManager;
     private Vector2 inputAxis;
     private List<Image> radialMenuSprites = new List<Image>();
     private Image selectedSprite;
@@ -37,9 +37,9 @@ public class ModeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        recordingScript = GetComponent<AnimationRecorder>();
-        checkpointScript = GetComponent<CheckpointManager>();
-        animationManagementScript = GetComponent<AnimationManager>();
+        animationRecorder = GetComponent<AnimationRecorder>();
+        checkpointManager = GetComponent<CheckpointManager>();
+        animationManager = GetComponent<AnimationManager>();
         DeactivateScripts(); // Make sure all function scripts are disabled by default
 
         radialMenuCanvas.gameObject.SetActive(false); // Disable UI for mode selection on startup
@@ -219,13 +219,13 @@ public class ModeManager : MonoBehaviour
 
         if (mode == InteractionMode.recording)
         {
-            recordingScript.EnableScript();
+            animationRecorder.EnableScript();
             Debug.Log("Recording");
         }
 
         if (mode == InteractionMode.planning)
         {
-            checkpointScript.EnableScript();
+            checkpointManager.EnableScript();
             Debug.Log("Planning");
         }
 
@@ -236,15 +236,15 @@ public class ModeManager : MonoBehaviour
 
         if (mode == InteractionMode.visualizing)
         {
-            animationManagementScript.EnableScript();
+            animationManager.EnableScript();
             Debug.Log("Visualizing");
         }
     }
 
     void DeactivateScripts()
     {
-        recordingScript.DisableScript();
-        checkpointScript.DisableScript();
-        animationManagementScript.DisableScript();
+        animationRecorder.DisableScript();
+        checkpointManager.DisableScript();
+        animationManager.DisableScript();
     }
 }

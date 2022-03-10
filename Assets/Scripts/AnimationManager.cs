@@ -21,10 +21,15 @@ public class AnimationManager : MonoBehaviour
     private bool overrideExistingCoordinates = false;
     private bool refreshAnimation = false;
     private Dictionary<string, List<Vector3>> coordinateDictionary;
+    private SerializationManager serializationManager;
+    private List<string> serializedClips;
 
     // Start is called before the first frame update
     void Start()
     {
+        animationClips = new List<AnimationClip>();
+        serializedClips = new List<string>();
+        serializationManager = GetComponent<SerializationManager>();
         visualizers = new List<GameObject>();
         extractor = Instantiate(extractorPrefab);
         directory = new DirectoryInfo(animationDirectory);
@@ -45,6 +50,16 @@ public class AnimationManager : MonoBehaviour
             Debug.Log(animationClips.Count);
             ExtractCoordinates();
         }
+
+        if (Input.GetKeyDown("n"))
+        {
+            foreach (var item in animationClips)
+            {
+                string serializedClip = serializationManager.Serialize(item);
+                Debug.Log(serializedClip);
+                serializedClips.Add(serializedClip);
+            }
+        }
     }  
 
     void IndexAnimations()
@@ -55,7 +70,6 @@ public class AnimationManager : MonoBehaviour
         {
             string parentDirectory = new DirectoryInfo(file.FullName).Parent.Name + "/";
             string path = Path.Combine(parentDirectory, Path.GetFileNameWithoutExtension(file.FullName));
-            Debug.Log(path);
             animationFiles.Add(path);
             LoadAnimation(path);
         }
@@ -96,7 +110,6 @@ public class AnimationManager : MonoBehaviour
                 animator.SetTarget(AvatarTarget.Body, normalizedTime);
                 animator.Update(time);
                 //animator.SetFloat("progress", normalizedTime);
-                Debug.Log(time + ": " + animator.targetPosition);
                 coordinates.Add(animator.targetPosition);
             }
 

@@ -16,6 +16,7 @@ public class AnimationRecorder : MonoBehaviour
     public InputHelpers.Button stopRecordingInput;
     public InputHelpers.Button deleteRecordingInput;
 
+    private SerializationManager serializationManager;
     private string saveLocation = "Assets/Resources/Recordings/";
     private string clipName;
     private float framerate = 24f;
@@ -32,6 +33,8 @@ public class AnimationRecorder : MonoBehaviour
 
     void Start()
     {
+        serializationManager = GetComponent<SerializationManager>();
+
         if (clip == null)
         // Make sure there is a clip to write to
         {
@@ -94,8 +97,9 @@ public class AnimationRecorder : MonoBehaviour
     {
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        AssetDatabase.CreateAsset(currentClip, saveLocation + currentClipName + ".anim");
-        AssetDatabase.SaveAssets();
+        serializationManager.Serialize(currentClip);
+        //AssetDatabase.CreateAsset(currentClip, saveLocation + currentClipName + ".anim");
+        //AssetDatabase.SaveAssets();
     }
 
     private void DeleteRecording()
