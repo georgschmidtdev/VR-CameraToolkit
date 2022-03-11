@@ -8,10 +8,11 @@ public class AnimationManager : MonoBehaviour
     public GameObject extractorPrefab;
     public GameObject visualizerPrefab;
     public GameObject animationContainer;
+    public AnimationClip exampleClip;
     public float lineWidth = 0.05f;
     private GameObject extractor;
-    private string qualifier = "*.anim";
-    private string animationDirectory = "Assets/Resources/Recordings/";
+    private string qualifier = "*.saf";
+    private string animationDirectory;
     private bool scriptIsEnabled = false;
     private DirectoryInfo directory;
     private List<string> animationFiles;
@@ -21,15 +22,19 @@ public class AnimationManager : MonoBehaviour
     private bool overrideExistingCoordinates = false;
     private bool refreshAnimation = false;
     private Dictionary<string, List<Vector3>> coordinateDictionary;
-    private SerializationManager serializationManager;
     private List<string> serializedClips;
 
     // Start is called before the first frame update
     void Start()
     {
+        animationDirectory = Application.persistentDataPath + "/RecordedAnimations/";
+        if (!Directory.Exists(animationDirectory))
+        {   
+            Directory.CreateDirectory(animationDirectory);
+        }
+
         animationClips = new List<AnimationClip>();
         serializedClips = new List<string>();
-        serializationManager = GetComponent<SerializationManager>();
         visualizers = new List<GameObject>();
         extractor = Instantiate(extractorPrefab);
         directory = new DirectoryInfo(animationDirectory);
@@ -53,12 +58,15 @@ public class AnimationManager : MonoBehaviour
 
         if (Input.GetKeyDown("n"))
         {
-            foreach (var item in animationClips)
+            AnimationCurve curve = AnimationUtility.
+            SerializationManager.SaveFile(exampleClip);
+
+            /**foreach (var item in animationClips)
             {
-                string serializedClip = serializationManager.Serialize(item);
+                string serializedClip = SerializationManager.Serialize(item);
                 Debug.Log(serializedClip);
                 serializedClips.Add(serializedClip);
-            }
+            }**/
         }
     }  
 
@@ -66,10 +74,10 @@ public class AnimationManager : MonoBehaviour
     {
         ResetFileIndex();
         
-        foreach (var file in directory.GetFiles(qualifier))
+        foreach (var file in Directory.GetFiles(animationDirectory, qualifier, SearchOption.AllDirectories))
         {
-            string parentDirectory = new DirectoryInfo(file.FullName).Parent.Name + "/";
-            string path = Path.Combine(parentDirectory, Path.GetFileNameWithoutExtension(file.FullName));
+            string parentDirectory = new DirectoryInfo(file).Parent.Name + "/";
+            string path = Path.Combine(parentDirectory, Path.GetFileNameWithoutExtension(file));
             animationFiles.Add(path);
             LoadAnimation(path);
         }
@@ -109,7 +117,6 @@ public class AnimationManager : MonoBehaviour
                 
                 animator.SetTarget(AvatarTarget.Body, normalizedTime);
                 animator.Update(time);
-                //animator.SetFloat("progress", normalizedTime);
                 coordinates.Add(animator.targetPosition);
             }
 

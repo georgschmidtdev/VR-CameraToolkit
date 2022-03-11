@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -16,7 +16,6 @@ public class AnimationRecorder : MonoBehaviour
     public InputHelpers.Button stopRecordingInput;
     public InputHelpers.Button deleteRecordingInput;
 
-    private SerializationManager serializationManager;
     private string saveLocation = "Assets/Resources/Recordings/";
     private string clipName;
     private float framerate = 24f;
@@ -33,8 +32,6 @@ public class AnimationRecorder : MonoBehaviour
 
     void Start()
     {
-        serializationManager = GetComponent<SerializationManager>();
-
         if (clip == null)
         // Make sure there is a clip to write to
         {
@@ -97,7 +94,8 @@ public class AnimationRecorder : MonoBehaviour
     {
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        serializationManager.Serialize(currentClip);
+        //SerializationManager.SaveFile(currentClip);
+        currentClip.hideFlags = HideFlags.None;
         //AssetDatabase.CreateAsset(currentClip, saveLocation + currentClipName + ".anim");
         //AssetDatabase.SaveAssets();
     }
@@ -105,16 +103,20 @@ public class AnimationRecorder : MonoBehaviour
     private void DeleteRecording()
     {
         if (canRecord)
+        // Dont delete during recording
         {
             return;
         }
 
-        if (!AssetDatabase.Contains(currentClip))
+        if (true)
+        // File does not exist
         {
             return;
         }
+        // ToDo:
+        // Rework saving functionality to avoid using UnityEditor namespace
 
-        AssetDatabase.DeleteAsset(saveLocation + currentClipName + ".anim");
+        // AssetDatabase.DeleteAsset(saveLocation + currentClipName + ".anim");
     }
 
     private void LateUpdate()

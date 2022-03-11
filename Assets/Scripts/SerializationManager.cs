@@ -2,45 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
 
-public class SerializationManager : MonoBehaviour
+[Serializable]
+public class SerializedAnimation
 {
-    [Serializable]
-    public class SerializedAnimation
+    public AnimationClip clip;
+}
+
+public static class SerializationManager
+{
+    private static string saveDirectory = "/RecordedAnimations";
+    private static string sessionID = "/currentSession/";
+
+    public static void SaveFile(AnimationClip clip)
     {
-        public string name;
-        public float length;
-        public float framerate;
-        public AnimationClip clip;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        SerializedAnimation animation = Serialize(clip);
+        string fileName = clip.name + ".saf";
+        string jsonAnimation = JsonUtility.ToJson(animation);
+        string dir = Application.persistentDataPath + saveDirectory + sessionID;
+        Debug.Log(dir);
+
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        File.WriteAllText(dir + fileName, jsonAnimation);
     }
 
-    // Update is called once per frame
-    void Update()
+    public static AnimationClip LoadFile(string filePath)
     {
-        
+        string jsonAnimation = File.ReadAllText(filePath);
+        SerializedAnimation animation = JsonUtility.FromJson<SerializedAnimation>(jsonAnimation);
+        AnimationClip clip = Deserialize(animation);
+
+        return clip;
     }
 
-    public string Serialize(AnimationClip clip)
+    public static SerializedAnimation Serialize(AnimationClip clip)
     {
         SerializedAnimation animation = new SerializedAnimation();
-        animation.name = clip.name;
-        animation.length = clip.length;
-        animation.length = clip.frameRate;
         animation.clip = clip;
-        string serializedAnimationClip = JsonUtility.ToJson(animation);
 
-        return serializedAnimationClip;
+        return animation;
     }
 
-    public AnimationClip DeSerialize(string serializedAnimationClip)
+    public static AnimationClip Deserialize(SerializedAnimation animation)
     {
-        SerializedAnimation animation = JsonUtility.FromJson<SerializedAnimation>(serializedAnimationClip);
-        
         return animation.clip;
     }
 }
