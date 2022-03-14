@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEditor;
+using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -16,7 +16,9 @@ public class AnimationRecorder : MonoBehaviour
     public InputHelpers.Button stopRecordingInput;
     public InputHelpers.Button deleteRecordingInput;
 
-    private string saveLocation = "Assets/Resources/Recordings/";
+    private string saveDirectory = "/RecordedAnimations";
+    private string sessionID;
+    private string fullDirectory;
     private string clipName;
     private float framerate = 24f;
     private string startRecordingKey = "i";
@@ -29,15 +31,10 @@ public class AnimationRecorder : MonoBehaviour
     private bool canRecord = true;
     private int index;
     private string currentClipName;
+    private List<AnimationClip> sessionClips;
 
     void Start()
     {
-        if (clip == null)
-        // Make sure there is a clip to write to
-        {
-            CreateNewClip();
-        }
-
         var savedIndex = PlayerPrefs.GetInt(activeObject.name + "Index");
 
         if (savedIndex != 0)
@@ -94,10 +91,7 @@ public class AnimationRecorder : MonoBehaviour
     {
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        //SerializationManager.SaveFile(currentClip);
-        currentClip.hideFlags = HideFlags.None;
-        //AssetDatabase.CreateAsset(currentClip, saveLocation + currentClipName + ".anim");
-        //AssetDatabase.SaveAssets();
+        AssetDatabase.CreateAsset(currentClip, Application.persistentDataPath + saveDirectory  + currentClipName + ".anim");
     }
 
     private void DeleteRecording()
@@ -115,8 +109,6 @@ public class AnimationRecorder : MonoBehaviour
         }
         // ToDo:
         // Rework saving functionality to avoid using UnityEditor namespace
-
-        // AssetDatabase.DeleteAsset(saveLocation + currentClipName + ".anim");
     }
 
     private void LateUpdate()

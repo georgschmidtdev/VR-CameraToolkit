@@ -7,13 +7,21 @@ using System.IO;
 [Serializable]
 public class SerializedAnimation
 {
-    public AnimationClip clip;
+    public string clipName;
+    public float frameRate;
+    public float length;
+    List<Vector3> position;
+    List<Vector4> rotation;
+    List<float> fov;
+    List<float> focalLength;
 }
 
 public static class SerializationManager
 {
+    private static AnimationRecorder animationRecorder;
     private static string saveDirectory = "/RecordedAnimations";
     private static string sessionID = "/currentSession/";
+    private static List<AnimationClip> sessionClips;
 
     public static void SaveFile(AnimationClip clip)
     {
@@ -43,13 +51,16 @@ public static class SerializationManager
     public static SerializedAnimation Serialize(AnimationClip clip)
     {
         SerializedAnimation animation = new SerializedAnimation();
-        animation.clip = clip;
-
+        animation.clipName = clip.name;
+        animation.frameRate = clip.frameRate;
+        animation.length = clip.frameRate;
+        
         return animation;
     }
 
     public static AnimationClip Deserialize(SerializedAnimation animation)
     {
-        return animation.clip;
+        AnimationClip clip = new AnimationClip();
+        return clip;
     }
 }
