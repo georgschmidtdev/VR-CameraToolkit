@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -15,39 +16,32 @@ public class AnimationRecorder : MonoBehaviour
     public InputHelpers.Button startRecordingInput;
     public InputHelpers.Button stopRecordingInput;
     public InputHelpers.Button deleteRecordingInput;
+    public string customPrefix = "";
+    public string customName = "";
+    public enum NamingConvention {Random, Prefix, Custom};
+    public NamingConvention namingConvention;
 
-    private string saveDirectory = "/RecordedAnimations";
-    private string sessionID;
-    private string fullDirectory;
+    private string saveDirectory;
+    private string sessionId;
     private string clipName;
     private float framerate = 24f;
     private string startRecordingKey = "i";
     private string stopRecordingKey = "o";
     private string deleteRecordingKey = "p";
-    private string deleteIndexKey = "l";
     private bool scriptIsEnabled = false;
+    private bool overwriteExistingFiles = false;
     private AnimationClip clip;
     private AnimationClip currentClip;
     private bool canRecord = true;
     private int index;
-    private string currentClipName;
     private List<AnimationClip> sessionClips;
 
     void Start()
     {
-        var savedIndex = PlayerPrefs.GetInt(activeObject.name + "Index");
-
-        if (savedIndex != 0)
-        {
-            index = savedIndex;
-        }
-
+        saveDirectory = SessionManager.GetCurrentSessionDirectory();
         recorder = new GameObjectRecorder(activeObject);
         recorder.BindComponentsOfType<Transform>(activeObject, false);
         recorder.BindComponentsOfType<Camera>(activeObject, false);
-
-        clipName = activeObject.name + "_animation";
-        clipName = clipName.Replace(" ", "_");
     }
 
     void Update()
@@ -71,13 +65,6 @@ public class AnimationRecorder : MonoBehaviour
                 DeleteRecording();
                 Debug.Log("Recording deleted");
             }
-
-            if (Input.GetKeyDown(deleteIndexKey))
-            {
-                PlayerPrefs.DeleteKey(activeObject.name + "Index");
-                index = 0;
-                Debug.Log("Index reset");
-            }
         }
     }
 
@@ -91,7 +78,31 @@ public class AnimationRecorder : MonoBehaviour
     {
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        AssetDatabase.CreateAsset(currentClip, Application.persistentDataPath + saveDirectory  + currentClipName + ".anim");
+        string fullPath = saveDirectory + clipName + ".anim";
+        AssetDatabase.CreateAsset(currentClip, fullPath);
+
+        if (overwriteExistingFiles)
+        {
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+
+            AssetDatabase.SaveAssets();
+        }
+
+        else
+        {
+            if (File.Exists(fullPath) && namingConvention == NamingConvention.Custom)
+            {
+                Debug.Log("File already exists, please use another name or change the naming convention");
+            }
+
+            else
+            {
+                AssetDatabase.SaveAssets();
+            }
+        }
     }
 
     private void DeleteRecording()
@@ -128,19 +139,39 @@ public class AnimationRecorder : MonoBehaviour
     {
         clip = new AnimationClip();
 
-        if (clip.name.Contains(clip.name))
+        if (namingConvention == NamingConvention.Random)
         {
-            clip.name = clipName + "_" + (index++);
-            currentClipName = clip.name;
+            clipName = SessionManager.CreateRandomId();
         }
 
+        else if (namingConvention == NamingConvention.Prefix)
+        {
+            if (customPrefix != "")
+            {
+                clipName = customPrefix + SessionManager.CreateRandomId();
+            }
+
+            else
+            {
+                Debug.Log("Custom prefix empty");
+            }
+        }
+
+        else if (namingConvention == NamingConvention.Custom)
+        {
+            if (customName != "")
+            {
+                clipName = customName;
+            }
+
+            else
+            {
+                Debug.Log("Custom name empty");
+            }
+        }
+        
         clip.frameRate = framerate;
         currentClip = clip;
-    }
-
-    private void OnDisable()
-    {
-        PlayerPrefs.SetInt(activeObject.name + "Index", index);
     }
 
     public void DisableScript()

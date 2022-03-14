@@ -11,7 +11,7 @@ public class AnimationManager : MonoBehaviour
     public float lineWidth = 0.05f;
     private GameObject extractor;
     private string qualifier = "*.anim";
-    private string animationDirectory = "Assets/Resources/Recordings";
+    private string animationDirectory;
     private bool scriptIsEnabled = false;
     private AnimationClip currentAnimationClip;
     private List<GameObject> visualizers;
@@ -191,7 +191,7 @@ public class AnimationManager : MonoBehaviour
 
     void ResetLineRenderers()
     {
-        
+
     }
 
     public void DisableScript()
