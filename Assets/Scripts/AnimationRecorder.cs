@@ -16,7 +16,9 @@ public class AnimationRecorder : MonoBehaviour
     public InputHelpers.Button stopRecordingInput;
     public InputHelpers.Button deleteRecordingInput;
 
-    private string saveLocation = "Assets/Recordings/";
+    private string saveDirectory = "/RecordedAnimations";
+    private string sessionID;
+    private string fullDirectory;
     private string clipName;
     private float framerate = 24f;
     private string startRecordingKey = "i";
@@ -29,15 +31,10 @@ public class AnimationRecorder : MonoBehaviour
     private bool canRecord = true;
     private int index;
     private string currentClipName;
+    private List<AnimationClip> sessionClips;
 
     void Start()
     {
-        if (clip == null)
-        // Make sure there is a clip to write to
-        {
-            CreateNewClip();
-        }
-
         var savedIndex = PlayerPrefs.GetInt(activeObject.name + "Index");
 
         if (savedIndex != 0)
@@ -49,10 +46,8 @@ public class AnimationRecorder : MonoBehaviour
         recorder.BindComponentsOfType<Transform>(activeObject, false);
         recorder.BindComponentsOfType<Camera>(activeObject, false);
 
-        //if (clipName == "")
-        //{
-            clipName = activeObject.name + "_animation";
-        //}
+        clipName = activeObject.name + "_animation";
+        clipName = clipName.Replace(" ", "_");
     }
 
     void Update()
@@ -96,23 +91,24 @@ public class AnimationRecorder : MonoBehaviour
     {
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        AssetDatabase.CreateAsset(currentClip, saveLocation + currentClipName + ".anim");
-        AssetDatabase.SaveAssets();
+        AssetDatabase.CreateAsset(currentClip, Application.persistentDataPath + saveDirectory  + currentClipName + ".anim");
     }
 
     private void DeleteRecording()
     {
         if (canRecord)
+        // Dont delete during recording
         {
             return;
         }
 
-        if (!AssetDatabase.Contains(currentClip))
+        if (true)
+        // File does not exist
         {
             return;
         }
-
-        AssetDatabase.DeleteAsset(saveLocation + currentClipName + ".anim");
+        // ToDo:
+        // Rework saving functionality to avoid using UnityEditor namespace
     }
 
     private void LateUpdate()

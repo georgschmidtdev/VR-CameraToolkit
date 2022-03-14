@@ -75,8 +75,7 @@ public class CheckpointManager : MonoBehaviour
     {
         if (checkpointRay.TryGetHitInfo(out Vector3 hitPosition, out Vector3 normal, out int positionInLine, out bool isValidTarget))
         {
-            instancedCheckpoints.Add(Instantiate(instancePrefab, hitPosition, Quaternion.Euler(0f, 0f, 0f), instanceParent
-    .transform));
+            instancedCheckpoints.Add(Instantiate(instancePrefab, hitPosition, Quaternion.Euler(0f, 0f, 0f), instanceParent.transform));
             currentInstance = instancedCheckpoints[instancedCheckpoints.Count - 1];
         }
     }
