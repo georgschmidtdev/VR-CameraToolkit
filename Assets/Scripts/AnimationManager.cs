@@ -118,9 +118,10 @@ public class AnimationManager : MonoBehaviour
             
             else
             {
-                Debug.Log("Entry for " + name + " already exists");
+                Debug.Log("Entry for " + clip.name + " already exists");
             }
         }
+        
         else
         // Add new entry
         {
