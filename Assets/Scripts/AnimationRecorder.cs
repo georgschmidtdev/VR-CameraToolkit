@@ -21,7 +21,7 @@ public class AnimationRecorder : MonoBehaviour
     public enum NamingConvention {Random, Prefix, Custom};
     public NamingConvention namingConvention;
 
-    private string saveDirectory;
+    private string sessionDirectory;
     private string sessionId;
     private string clipName;
     private float framerate = 24f;
@@ -38,7 +38,6 @@ public class AnimationRecorder : MonoBehaviour
 
     void Start()
     {
-        saveDirectory = SessionManager.GetCurrentSessionDirectory();
         recorder = new GameObjectRecorder(activeObject);
         recorder.BindComponentsOfType<Transform>(activeObject, false);
         recorder.BindComponentsOfType<Camera>(activeObject, false);
@@ -70,6 +69,7 @@ public class AnimationRecorder : MonoBehaviour
 
     private void StartRecording()
     {
+        sessionDirectory = SessionManager.GetSessionDirectory();
         canRecord = true;
         CreateNewClip();
     }
@@ -78,7 +78,7 @@ public class AnimationRecorder : MonoBehaviour
     {
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        string fullPath = saveDirectory + clipName + ".anim";
+        string fullPath = sessionDirectory + clipName + ".anim";
         AssetDatabase.CreateAsset(currentClip, fullPath);
 
         if (overwriteExistingFiles)

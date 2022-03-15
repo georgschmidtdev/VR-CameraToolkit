@@ -5,28 +5,28 @@ using UnityEngine;
 
 public class SessionManager : MonoBehaviour
 {
-    private static string saveDirectory = Application.persistentDataPath + "/RecordedAnimations/";
+    private static string saveDirectory;
     private static string sessionDirectory;
-    private static int year;
-    private static int month;
-    private static int day;
+    private static string year;
+    private static string month;
+    private static string day;
     private static int hour;
     private static int minute;
     private static int second;
-
     private static string sessionId;
 
     void Start()
     {
+        saveDirectory = Application.dataPath + "/Resources/RecordedAnimations/";
         InitialDirectorySetup();
         SessionDirectorySetup();
     }
 
     private static void GetCurrentTime()
     {
-        year = System.DateTime.Now.Year;
-        month = System.DateTime.Now.Month;
-        day = System.DateTime.Now.Day;
+        year = System.DateTime.Now.Year.ToString();
+        month = System.DateTime.Now.Month.ToString();
+        day = System.DateTime.Now.Day.ToString();
 
         hour = System.DateTime.Now.Hour;
         minute = System.DateTime.Now.Minute;
@@ -41,11 +41,9 @@ public class SessionManager : MonoBehaviour
 
         Random.InitState(seed);
 
-        string randomId = Random.state.ToString();
+        string randomId = Random.value.ToString();
 
-        string sessionId = year + month + day + "_" + randomId;
-
-        return sessionId;
+        return randomId;
     }
     
     public static void CreateSessionId()
@@ -62,7 +60,7 @@ public class SessionManager : MonoBehaviour
         }
     }
    
-    public static void SessionDirectorySetup()
+    private void SessionDirectorySetup()
     {
         CreateSessionId();
         sessionDirectory = saveDirectory + GetSessionId();
@@ -87,7 +85,12 @@ public class SessionManager : MonoBehaviour
         }
     }
 
-    public static string GetCurrentSessionDirectory()
+    public static string GetSaveDirectory()
+    {
+        return saveDirectory;
+    }
+
+    public static string GetSessionDirectory()
     {
         return sessionDirectory;
     }
