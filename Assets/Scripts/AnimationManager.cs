@@ -11,7 +11,8 @@ public class AnimationManager : MonoBehaviour
     public float lineWidth = 0.05f;
     private GameObject extractor;
     private string qualifier = "*.anim";
-    private string animationDirectory = "Assets/Resources/Recordings";
+    private string saveDirectory;
+    private string sessionDirectory;
     private bool scriptIsEnabled = false;
     private AnimationClip currentAnimationClip;
     private List<GameObject> visualizers;
@@ -45,15 +46,19 @@ public class AnimationManager : MonoBehaviour
     void IndexAnimations()
     // Search the Resources folder for existing .anim AnimationClips
     {
+        saveDirectory = SessionManager.GetSaveDirectory();
+        sessionDirectory = SessionManager.GetSessionDirectory();
+        Debug.Log(saveDirectory);
         ResetFileIndex(); // Clear already indexed files to prevent dublicates
         
-        foreach (var file in Directory.GetFiles(animationDirectory, qualifier, SearchOption.AllDirectories))
+        foreach (var file in Directory.GetFiles(saveDirectory, qualifier, SearchOption.AllDirectories))
         // Iterate through each file in the directory and all its sub-directories
         {
             // Prepare the files path for loading
-            string parentDirectory = new DirectoryInfo(file).Parent.Name + "/";
+            string parentDirectory = Path.Combine(new DirectoryInfo(sessionDirectory).Parent.Name + "/", new DirectoryInfo(file).Parent.Name + "/");
             string path = Path.Combine(parentDirectory, Path.GetFileNameWithoutExtension(file));
             path = path.Replace("/", "\\");
+            Debug.Log(path);
             LoadAnimation(path);
         }
     }
@@ -113,9 +118,10 @@ public class AnimationManager : MonoBehaviour
             
             else
             {
-                Debug.Log("Entry for " + name + " already exists");
+                Debug.Log("Entry for " + clip.name + " already exists");
             }
         }
+        
         else
         // Add new entry
         {
@@ -191,7 +197,7 @@ public class AnimationManager : MonoBehaviour
 
     void ResetLineRenderers()
     {
-        
+
     }
 
     public void DisableScript()
