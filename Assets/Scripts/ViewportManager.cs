@@ -5,8 +5,8 @@ using UnityEngine;
 public class ViewportManager : MonoBehaviour
 {
     public GameObject viewport;
-    public GameObject viewportCamera;
-    public GameObject viewportInterface;
+    public Camera viewportCamera;
+    public Canvas viewportInterface;
     public enum AspectRatio {Standard, Square, HDTV, Panavision, Custom};
     public AspectRatio aspectRatio;
 
@@ -47,6 +47,6 @@ public class ViewportManager : MonoBehaviour
 
     private void ChangeViewportAspectRatios()
     {
-        
+        viewportCamera.aspect = aspectRatioDictionary.GetValueOrDefault(aspectRatio).x / aspectRatioDictionary.GetValueOrDefault(aspectRatio).y;
     }
 }
