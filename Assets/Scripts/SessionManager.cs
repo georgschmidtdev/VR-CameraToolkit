@@ -18,6 +18,7 @@ public class SessionManager : MonoBehaviour
     void Start()
     {
         saveDirectory = Application.dataPath + "/Resources/RecordedAnimations/";
+        RemoveEmptySessionDirectories();
         InitialDirectorySetup();
         SessionDirectorySetup();
     }
@@ -93,5 +94,18 @@ public class SessionManager : MonoBehaviour
     public static string GetSessionDirectory()
     {
         return sessionDirectory;
+    }
+
+    private void RemoveEmptySessionDirectories()
+    {
+        foreach (var folder in Directory.GetDirectories(saveDirectory))
+        {
+            if (Directory.GetFiles(folder).Length == 0)
+            {
+                string metaFile = folder.ToString() + ".meta";
+                File.Delete(metaFile);
+                Directory.Delete(folder);
+            }
+        }
     }
 }
