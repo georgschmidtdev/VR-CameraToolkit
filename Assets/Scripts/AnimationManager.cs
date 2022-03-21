@@ -26,7 +26,6 @@ public class AnimationManager : MonoBehaviour
         visualizers = new List<GameObject>();
         extractor = Instantiate(extractorPrefab);
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
-        IndexAnimations();
     }
 
     // Update is called once per frame
@@ -35,6 +34,11 @@ public class AnimationManager : MonoBehaviour
         if (scriptIsEnabled)
         {
             
+        }
+
+        if (Input.GetKeyDown("n"))
+        {
+            IndexAnimations();
         }
 
         if (Input.GetKeyDown("m"))
@@ -48,7 +52,6 @@ public class AnimationManager : MonoBehaviour
     {
         saveDirectory = SessionManager.GetSaveDirectory();
         sessionDirectory = SessionManager.GetSessionDirectory();
-        Debug.Log(saveDirectory);
         ResetFileIndex(); // Clear already indexed files to prevent dublicates
         
         foreach (var file in Directory.GetFiles(saveDirectory, qualifier, SearchOption.AllDirectories))
@@ -58,7 +61,6 @@ public class AnimationManager : MonoBehaviour
             string parentDirectory = Path.Combine(new DirectoryInfo(sessionDirectory).Parent.Name + "/", new DirectoryInfo(file).Parent.Name + "/");
             string path = Path.Combine(parentDirectory, Path.GetFileNameWithoutExtension(file));
             path = path.Replace("/", "\\");
-            Debug.Log(path);
             LoadAnimation(path);
         }
     }

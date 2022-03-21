@@ -20,11 +20,12 @@ public class AnimationRecorder : MonoBehaviour
     public string customName = "";
     public enum NamingConvention {Random, Prefix, Custom};
     public NamingConvention namingConvention;
+    public static float framerate = 24f;
+    public static float focalLength = 35f;
 
     private string sessionDirectory;
     private string sessionId;
     private string clipName;
-    private float framerate = 24f;
     private string startRecordingKey = "i";
     private string stopRecordingKey = "o";
     private string deleteRecordingKey = "p";
@@ -172,6 +173,15 @@ public class AnimationRecorder : MonoBehaviour
         
         clip.frameRate = framerate;
         currentClip = clip;
+    }
+
+    public static List<float> GetCameraSettings()
+    {
+        List<float> cameraSettings = new List<float>();
+        cameraSettings.Add(framerate);
+        cameraSettings.Add(focalLength);
+
+        return cameraSettings;
     }
 
     public void DisableScript()
