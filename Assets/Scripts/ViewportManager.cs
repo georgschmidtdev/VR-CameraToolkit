@@ -92,7 +92,7 @@ public class ViewportManager : MonoBehaviour
         cameraSettings = AnimationRecorder.GetCameraSettings();
         framerateText.text = cameraSettings[0].ToString() + " fps";
         focalLengthText.text = cameraSettings[1].ToString() + " mm";
-        aspectRatioText.text = currentAspectRatio.ToString();
+        aspectRatioText.text = aspectRatio.ToString() + " - " + currentAspectRatio.ToString();
     }
 
     public void StartRecordingIndicator()
