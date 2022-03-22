@@ -10,8 +10,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class AnimationRecorder : MonoBehaviour
 // Uses the Unity GameObjectRecorder to capture different properties of a given gameObject
 {
-    GameObjectRecorder recorder;
     public GameObject activeObject;
+    public GameObject viewport;
     public XRNode inputDevice;
     public InputHelpers.Button startRecordingInput;
     public InputHelpers.Button stopRecordingInput;
@@ -23,6 +23,7 @@ public class AnimationRecorder : MonoBehaviour
     public static float framerate = 24f;
     public static float focalLength = 35f;
 
+    private GameObjectRecorder recorder;
     private string sessionDirectory;
     private string sessionId;
     private string clipName;
@@ -51,7 +52,6 @@ public class AnimationRecorder : MonoBehaviour
             if (Input.GetKeyDown(startRecordingKey))
             {
                 StartRecording();
-                Debug.Log("Recording started");
             }
 
             if (Input.GetKeyDown(stopRecordingKey))
@@ -70,6 +70,9 @@ public class AnimationRecorder : MonoBehaviour
 
     private void StartRecording()
     {
+        Debug.Log("Recording started");
+        ViewportManager.StartRecordingIndicator();
+
         sessionDirectory = SessionManager.GetSessionDirectory();
         canRecord = true;
         CreateNewClip();
@@ -77,9 +80,12 @@ public class AnimationRecorder : MonoBehaviour
 
     private void StopRecording()
     {
+        ViewportManager.StopRecordingIndicator();
+
         canRecord = false;
         recorder.SaveToClip(currentClip);
-        string fullPath = sessionDirectory + clipName + ".anim";
+        string fullPath = "Assets/" + Path.GetRelativePath(Application.dataPath, sessionDirectory) + clipName + ".anim";
+        Debug.Log(fullPath);
         AssetDatabase.CreateAsset(currentClip, fullPath);
 
         if (overwriteExistingFiles)
@@ -187,10 +193,12 @@ public class AnimationRecorder : MonoBehaviour
     public void DisableScript()
     {
         scriptIsEnabled = false;
+        viewport.gameObject.SetActive(false);
     }
 
     public void EnableScript()
     {
         scriptIsEnabled = true;
+        viewport.gameObject.SetActive(true);
     }
 }
