@@ -20,12 +20,12 @@ public class ViewportManager : MonoBehaviour
 
     private RectTransform viewport;
     private RectTransform indicators;
-    private Image recordingDot;
+    private static Image recordingDot;
     private TextMeshProUGUI framerateText;
     private TextMeshProUGUI focalLengthText;
     private TextMeshProUGUI aspectRatioText;
-    private Color defaultColor = Color.white;
-    private Color recordingColor = Color.red;
+    private static Color defaultColor = Color.white;
+    private static Color recordingColor = Color.red;
     private Vector2 standardRatio = new Vector2(4.0f, 3.0f);
     private Vector2 squareRatio = new Vector2(1.0f, 1.0f);
     private Vector2 hdtvRatio = new Vector2(16.0f, 9.0f);
@@ -95,12 +95,12 @@ public class ViewportManager : MonoBehaviour
         aspectRatioText.text = aspectRatio.ToString() + " - " + currentAspectRatio.ToString();
     }
 
-    public void StartRecordingIndicator()
+    public static void StartRecordingIndicator()
     {   
         recordingDot.color = recordingColor;
     }
 
-    public void StopRecordingIndicator()
+    public static void StopRecordingIndicator()
     {
         recordingDot.color = defaultColor;
     }
