@@ -18,8 +18,8 @@ public class ModeManager : MonoBehaviour
     public float upperLimit = 0.5f;
     public Canvas radialMenuCanvas;
     public List<GameObject> radialMenuItems;
-    public Color defaultColor = Color.grey;
-    public Color highlightedColor = Color.red;
+    public Color defaultColor = Color.white;
+    public Color highlightedColor = Color.blue;
     public enum InteractionMode{none, recording, planning, visualizing, exporting};
     public InteractionMode interactionMode;
 
@@ -32,6 +32,7 @@ public class ModeManager : MonoBehaviour
     private Vector2 inputAxis;
     private List<Image> radialMenuSprites = new List<Image>();
     private Image selectedSprite;
+    private Image middleSprite;
     private Component selectedScript;
 
     // Start is called before the first frame update
@@ -40,7 +41,7 @@ public class ModeManager : MonoBehaviour
         animationRecorder = GetComponent<AnimationRecorder>();
         checkpointManager = GetComponent<CheckpointManager>();
         animationManager = GetComponent<AnimationManager>();
-        DeactivateScripts(); // Make sure all function scripts are disabled by default
+        //DeactivateScripts(); // Make sure all function scripts are disabled by default
 
         radialMenuCanvas.gameObject.SetActive(false); // Disable UI for mode selection on startup
 
@@ -51,7 +52,7 @@ public class ModeManager : MonoBehaviour
             radialMenuSprites.Add(image);
         }
 
-        selectedSprite = radialMenuSprites[radialMenuSprites.Count-1]; // Initially set selected sprite to the center
+        middleSprite = radialMenuSprites[radialMenuSprites.Count - 1];
     }
 
     // Update is called once per frame
@@ -108,6 +109,7 @@ public class ModeManager : MonoBehaviour
         {
             wasSelected = true;
             ActivateScript(interactionMode);
+            ShowCurrentModeSprite();
             return true;
         }
         else if (!isSelected && wasSelected)
@@ -137,7 +139,7 @@ public class ModeManager : MonoBehaviour
             inputVector.x > lowerLimit &&   // Detext left limit
             inputVector.x < upperLimit &&   // Detect right limit
             inputVector.y > activationThreshold // Detect minimum value
-        ) 
+        )
         {
             //Debug.Log("Up");
             ResetSpriteColor(); // Reset sprite color to the default before updating
@@ -205,6 +207,11 @@ public class ModeManager : MonoBehaviour
         {
             item.color = defaultColor;
         }
+    }
+
+    void ShowCurrentModeSprite()
+    {
+        middleSprite.sprite = selectedSprite.sprite;
     }
 
     void ActivateScript(InteractionMode mode)
