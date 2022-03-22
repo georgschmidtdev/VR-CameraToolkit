@@ -38,11 +38,13 @@ public class SessionManager : MonoBehaviour
     {
         GetCurrentTime();
 
-        int seed = hour + minute + second;
+        string chars = "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789";
+        string randomId = "";
 
-        Random.InitState(seed);
-
-        string randomId = Random.value.ToString();
+        for (int i = 0; i < 11; i++)
+        {
+            randomId += chars[Random.Range(0, chars.Length)];
+        }
 
         return randomId;
     }
