@@ -1708,7 +1708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   extractorPrefab: {fileID: 4256825643239708236, guid: f1c9a08af7bc5ed45a3d2982155eca5a,
     type: 3}
-  visualizerPrefab: {fileID: 3125659517488454673, guid: 47a8bdebf86f83c4ea2be072605d5d94,
+  visualizerPrefab: {fileID: 389089625106896763, guid: 47a8bdebf86f83c4ea2be072605d5d94,
     type: 3}
   lineContainer: {fileID: 189896496}
   lineWidth: 0.05
