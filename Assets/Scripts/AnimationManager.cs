@@ -147,7 +147,7 @@ public class AnimationManager : MonoBehaviour
 
                 GameObject currentVisualizer;
                 currentVisualizer = Instantiate(visualizerPrefab, lineContainer.transform, true); // Instantiate prefab
-                currentVisualizer.name = name; // Assign name of AnimationClip to instantiated object
+                currentVisualizer.name = clip.name; // Assign name of AnimationClip to instantiated object
 
                 // Setup for LineRenderer
                 LineRenderer line = currentVisualizer.GetComponent<LineRenderer>();
@@ -160,6 +160,8 @@ public class AnimationManager : MonoBehaviour
                 {
                     line.SetPosition(index, coordinates[index]);
                 }
+
+                SetLineColor(line);
 
                 visualizers.Add(currentVisualizer); // Store instance in list
                 refreshAnimation = false;
@@ -175,7 +177,7 @@ public class AnimationManager : MonoBehaviour
         {
             GameObject currentVisualizer;
             currentVisualizer = Instantiate(visualizerPrefab, lineContainer.transform, true);
-            currentVisualizer.name = name;
+            currentVisualizer.name = clip.name;
 
             LineRenderer line = currentVisualizer.GetComponent<LineRenderer>();
             line.startWidth = lineWidth;
@@ -187,10 +189,48 @@ public class AnimationManager : MonoBehaviour
                 line.SetPosition(index, coordinates[index]);
             }
 
+            SetLineColor(line);
+
             visualizers.Add(currentVisualizer);
             refreshAnimation = false;
         }
     }
+
+    private void SetLineColor(LineRenderer line)
+    {
+        line.startColor = GetRandomColor();
+        line.endColor = OffsetColorHue(line.startColor);
+    }
+
+    private Color GetRandomColor()
+    {
+        Color randomColor = new Color 
+        (
+            Random.Range(0.0f, 1.0f),
+            Random.Range(0.0f, 1.0f),
+            Random.Range(0.0f, 1.0f),
+            1.0f
+        );
+
+        return randomColor;
+    }
+
+    private Color OffsetColorHue(Color input)
+    {
+        Color offsetColor;
+        float hue;
+        float saturation;
+        float value;
+
+        Color.RGBToHSV(input, out hue, out saturation, out value);
+
+        hue += Random.Range(- hue, 1 - hue);
+
+        offsetColor = Color.HSVToRGB(hue, saturation, value);
+
+        return offsetColor;
+    }
+
     void ResetFileIndex()
     {
         clipDictionary = null;
