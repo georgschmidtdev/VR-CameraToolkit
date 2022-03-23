@@ -89,11 +89,13 @@ public class ModeManager : MonoBehaviour
             ToggleVisibility();
             return true;
         }
+        
         else if (!isPressed && wasActivated)
         {
             wasActivated = false;
             return false;
         }
+
         else
         {
             return false;
@@ -112,11 +114,13 @@ public class ModeManager : MonoBehaviour
             ShowCurrentModeSprite();
             return true;
         }
+
         else if (!isSelected && wasSelected)
         {
             wasSelected = false;
             return false;
         }
+
         else
         {
             return false;
