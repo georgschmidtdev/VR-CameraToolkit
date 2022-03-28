@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using TMPro;
+using UnityEngine.UI;
 
 public class AnimationManager : MonoBehaviour
 {
@@ -133,7 +135,7 @@ public class AnimationManager : MonoBehaviour
     }
 
     void VisualizeAnimation(AnimationClip clip, List<Vector3> coordinates)
-    // Creates new LineRenderer object for given animation
+    // Create new LineRenderer object for given animation
     {
         Transform child = lineContainer.transform.Find(clip.name);
 
@@ -162,6 +164,7 @@ public class AnimationManager : MonoBehaviour
                 }
 
                 SetLineColor(line);
+                SetAnimationInfo(currentVisualizer, clip, line);
 
                 visualizers.Add(currentVisualizer); // Store instance in list
                 refreshAnimation = false;
@@ -190,10 +193,25 @@ public class AnimationManager : MonoBehaviour
             }
 
             SetLineColor(line);
+            SetAnimationInfo(currentVisualizer, clip, line);
 
             visualizers.Add(currentVisualizer);
             refreshAnimation = false;
         }
+    }
+
+    private void SetAnimationInfo(GameObject visualizer, AnimationClip clip, LineRenderer line)
+    {
+        Transform canvas = visualizer.gameObject.transform.Find("InformationCanvas");
+        TextMeshProUGUI name = canvas.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI length = canvas.gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI frameRate = canvas.gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        Image background = canvas.gameObject.transform.GetChild(3).GetComponent<Image>();
+
+        name.text = clip.name;
+        length.text = clip.length.ToString();
+        frameRate.text = clip.frameRate.ToString();
+        background.color = GetBlendedColor(line);
     }
 
     private void SetLineColor(LineRenderer line)
@@ -229,6 +247,17 @@ public class AnimationManager : MonoBehaviour
         offsetColor = Color.HSVToRGB(hue, saturation, value);
 
         return offsetColor;
+    }
+
+    private Color GetBlendedColor(LineRenderer line)
+    {
+        float colorR = line.startColor.r + line.endColor.r / 2.0f;
+        float colorG = line.startColor.g + line.endColor.g / 2.0f;
+        float colorB = line.startColor.b + line.endColor.b / 2.0f;
+
+        Color blendedColor = new Color(colorR, colorG, colorB, 0.5f);
+
+        return blendedColor;
     }
 
     void ResetFileIndex()

@@ -33,6 +33,7 @@ public class CheckpointManager : MonoBehaviour
     void Update()
     {
         InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
+
         
         if (scriptIsEnabled)
         {
@@ -44,7 +45,6 @@ public class CheckpointManager : MonoBehaviour
             }
         }
     }
-
     bool CheckIfActive(InputDevice device)
     {
         InputHelpers.IsPressed(device, activationButton, out bool isPressed);
