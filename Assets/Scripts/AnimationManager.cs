@@ -11,6 +11,8 @@ public class AnimationManager : MonoBehaviour
     public GameObject extractorPrefab;
     public GameObject visualizerPrefab;
     public GameObject lineContainer;
+    public GameObject animationBrowserList;
+    public GameObject listEntryPrefab;
     public float lineWidth = 0.05f;
     private GameObject extractor;
     private string qualifier = "*.anim";
@@ -133,6 +135,11 @@ public class AnimationManager : MonoBehaviour
             clipDictionary.Add(clip, coordinates);
             overrideExistingCoordinates = false;
         }
+    }
+
+    private void UpdateAnimationBrowser()
+    {
+        
     }
 
     void VisualizeAnimation(AnimationClip clip, List<Vector3> coordinates)
