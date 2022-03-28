@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
 
 public class AnimationManager : MonoBehaviour
 {
@@ -137,6 +138,7 @@ public class AnimationManager : MonoBehaviour
     void VisualizeAnimation(AnimationClip clip, List<Vector3> coordinates)
     // Create new LineRenderer object for given animation
     {
+        Vector3 targetPosition = CalculateBounds(coordinates);
         Transform child = lineContainer.transform.Find(clip.name);
 
         if (child != null)
@@ -164,7 +166,7 @@ public class AnimationManager : MonoBehaviour
                 }
 
                 SetLineColor(line);
-                SetAnimationInfo(currentVisualizer, clip, line);
+                SetAnimationInfo(currentVisualizer, clip, line, targetPosition);
 
                 visualizers.Add(currentVisualizer); // Store instance in list
                 refreshAnimation = false;
@@ -193,14 +195,43 @@ public class AnimationManager : MonoBehaviour
             }
 
             SetLineColor(line);
-            SetAnimationInfo(currentVisualizer, clip, line);
+            SetAnimationInfo(currentVisualizer, clip, line, targetPosition);
 
             visualizers.Add(currentVisualizer);
             refreshAnimation = false;
         }
     }
 
-    private void SetAnimationInfo(GameObject visualizer, AnimationClip clip, LineRenderer line)
+    private Vector3 CalculateBounds(List<Vector3> coordinates)
+    {
+        List<float> xCoordinates = new List<float>();
+        List<float> yCoordinates = new List<float>();
+        List<float> zCoordinates = new List<float>();
+        Vector3 targetPosition;
+
+        foreach (var item in coordinates)
+        {
+            xCoordinates.Add(item.x);
+            yCoordinates.Add(item.y);
+            zCoordinates.Add(item.z);
+        }
+
+        float xMin = xCoordinates.Min();
+        float xMax = xCoordinates.Max();
+        float yMax = yCoordinates.Max();
+        float zMin = zCoordinates.Min();
+        float zMax = zCoordinates.Max();
+
+        float xPosition = (xMin + xMax) / 2;
+        float zPosition = (zMin + zMax) / 2;
+
+        targetPosition = new Vector3(xPosition, yMax, zPosition);
+        Debug.Log(targetPosition);
+
+        return targetPosition;
+    }
+
+    private void SetAnimationInfo(GameObject visualizer, AnimationClip clip, LineRenderer line, Vector3 target)
     {
         Transform canvas = visualizer.gameObject.transform.Find("InformationCanvas");
         TextMeshProUGUI name = canvas.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -212,6 +243,8 @@ public class AnimationManager : MonoBehaviour
         length.text = clip.length.ToString();
         frameRate.text = clip.frameRate.ToString();
         background.color = GetBlendedColor(line);
+
+        canvas.transform.position = target;
     }
 
     private void SetLineColor(LineRenderer line)
