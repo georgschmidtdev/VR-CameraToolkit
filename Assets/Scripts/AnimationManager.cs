@@ -203,35 +203,39 @@ public class AnimationManager : MonoBehaviour
     }
 
     private Vector3 CalculateBounds(List<Vector3> coordinates)
+    // Calculate position for the information canvas of AnimationVisualizers
+    // Get "bounding box" by finding minimum and maximum values for recorded coordinates
     {
         List<float> xCoordinates = new List<float>();
         List<float> yCoordinates = new List<float>();
         List<float> zCoordinates = new List<float>();
-        Vector3 targetPosition;
 
         foreach (var item in coordinates)
+        // Translate each axis into its own list
         {
             xCoordinates.Add(item.x);
             yCoordinates.Add(item.y);
             zCoordinates.Add(item.z);
         }
 
+        // Get minimum and maximum values
         float xMin = xCoordinates.Min();
         float xMax = xCoordinates.Max();
         float yMax = yCoordinates.Max();
         float zMin = zCoordinates.Min();
         float zMax = zCoordinates.Max();
 
+        // Calculate average of X and Z
         float xPosition = (xMin + xMax) / 2;
         float zPosition = (zMin + zMax) / 2;
 
-        targetPosition = new Vector3(xPosition, yMax, zPosition);
-        Debug.Log(targetPosition);
+        Vector3 targetPosition = new Vector3(xPosition, yMax, zPosition);
 
         return targetPosition;
     }
 
     private void SetAnimationInfo(GameObject visualizer, AnimationClip clip, LineRenderer line, Vector3 target)
+    // Enter information about AnimationClip into canvas
     {
         Transform canvas = visualizer.gameObject.transform.Find("InformationCanvas");
         TextMeshProUGUI name = canvas.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
