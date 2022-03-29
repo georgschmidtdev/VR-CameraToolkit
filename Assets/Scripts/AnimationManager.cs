@@ -46,15 +46,7 @@ public class AnimationManager : MonoBehaviour
         if (Input.GetKeyDown("n"))
         {
             IndexAnimations();
-        }
-
-        if (Input.GetKeyDown("m"))
-        {
             ExtractCoordinates();
-        }
-
-        if (Input.GetKeyDown("b"))
-        {
             UpdateAnimationBrowser();
         }
     }  
@@ -119,29 +111,8 @@ public class AnimationManager : MonoBehaviour
     void UpdateDictionary(AnimationClip clip, List<Vector3> coordinates)
     // Add the keyvaluepair to the dictionary
     {
-        if (clipDictionary.ContainsKey(clip))
-        // Check if entry already exists
-        {
-            if(overrideExistingCoordinates)
-            // Replace keyvaluepair if true
-            {
-                clipDictionary.Remove(clip);
-                clipDictionary.Add(clip, coordinates);
-                overrideExistingCoordinates = false;
-            }
-            
-            else
-            {
-                Debug.Log("Entry for " + clip.name + " already exists");
-            }
-        }
-        
-        else
-        // Add new entry
-        {
-            clipDictionary.Add(clip, coordinates);
-            overrideExistingCoordinates = false;
-        }
+        clipDictionary.Add(clip, coordinates);
+        overrideExistingCoordinates = false;
     }
 
     private void UpdateAnimationBrowser()
