@@ -14,6 +14,8 @@ public class AnimationManager : MonoBehaviour
     public GameObject animationBrowserList;
     public GameObject listEntryPrefab;
     public float lineWidth = 0.05f;
+
+    private List<GameObject> animationList;
     private GameObject extractor;
     private string qualifier = "*.anim";
     private string saveDirectory;
@@ -49,6 +51,11 @@ public class AnimationManager : MonoBehaviour
         if (Input.GetKeyDown("m"))
         {
             ExtractCoordinates();
+        }
+
+        if (Input.GetKeyDown("b"))
+        {
+            UpdateAnimationBrowser();
         }
     }  
 
@@ -138,8 +145,26 @@ public class AnimationManager : MonoBehaviour
     }
 
     private void UpdateAnimationBrowser()
+    // Populate animation browser for visualized animations
     {
-        
+        animationList = new List<GameObject>();
+        GameObject currentListEntry;
+        TextMeshProUGUI currentEntryName;
+
+        foreach (var item in clipDictionary)
+        {
+            currentListEntry = Instantiate(listEntryPrefab, parent: animationBrowserList.transform);
+            currentEntryName = currentListEntry.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            currentListEntry.name = item.Key.name;
+            currentEntryName.text = item.Key.name;
+            animationList.Add(currentListEntry);
+        }
+
+        for (int i = 0; i < animationList.Count; i++)
+        {
+            animationList[i].GetComponent<RectTransform>().localPosition = new Vector3(0, - i * 0.1f, 0);
+        }
     }
 
     void VisualizeAnimation(AnimationClip clip, List<Vector3> coordinates)
