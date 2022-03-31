@@ -112,6 +112,7 @@ public class ModeManager : MonoBehaviour
             wasSelected = true;
             ActivateScript(interactionMode);
             ShowCurrentModeSprite();
+            ToggleVisibility();
             return true;
         }
 

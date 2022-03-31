@@ -37,12 +37,15 @@ public class AnimationRecorder : MonoBehaviour
     private bool canRecord = true;
     private int index;
     private List<AnimationClip> sessionClips;
+    private ViewportManager viewportManager;
 
     void Start()
     {
         recorder = new GameObjectRecorder(activeObject);
         recorder.BindComponentsOfType<Transform>(activeObject, false);
         recorder.BindComponentsOfType<Camera>(activeObject, false);
+
+        viewportManager = GetComponent<ViewportManager>();
     }
 
     void Update()
@@ -200,5 +203,6 @@ public class AnimationRecorder : MonoBehaviour
     {
         scriptIsEnabled = true;
         viewport.gameObject.SetActive(true);
+        viewportManager.ResetViewportPosition();
     }
 }

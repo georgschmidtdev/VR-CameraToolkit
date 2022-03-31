@@ -104,4 +104,9 @@ public class ViewportManager : MonoBehaviour
     {
         recordingDot.color = defaultColor;
     }
+
+    public void ResetViewportPosition()
+    {
+        Vector3 defaultPosition = gameObject.transform.position + new Vector3(0f, 0.5f, 0.5f);
+    }
 }
