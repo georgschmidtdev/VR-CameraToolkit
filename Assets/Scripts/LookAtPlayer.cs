@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class AlignWithPlayer : MonoBehaviour
+public class LookAtPlayer : MonoBehaviour
 {
     public Canvas informationCanvas;
-    public GameObject rig;
 
+    private GameObject vrCamera;
     private static bool scriptIsEnabled = false;
     private TextMeshProUGUI animationNameField;
     private TextMeshProUGUI animationLengthField;
@@ -18,6 +18,7 @@ public class AlignWithPlayer : MonoBehaviour
     void Start()
     {
         DisableScript();
+        vrCamera = GameObject.FindWithTag("VRCamera");
     }
 
     // Update is called once per frame
@@ -32,7 +33,7 @@ public class AlignWithPlayer : MonoBehaviour
     void RotateCanvas()
     {
         Quaternion newRotation;
-        Vector3 direction = rig.transform.position - informationCanvas.gameObject.transform.position;
+        Vector3 direction = vrCamera.transform.position - informationCanvas.gameObject.transform.position;
         newRotation = Quaternion.LookRotation(-direction, Vector3.up);
         informationCanvas.gameObject.transform.rotation = newRotation;
     }
