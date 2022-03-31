@@ -11,11 +11,14 @@ public class AnimationManager : MonoBehaviour
     public GameObject extractorPrefab;
     public GameObject visualizerPrefab;
     public GameObject lineContainer;
+    public GameObject animationBrowser;
     public GameObject animationBrowserList;
     public GameObject listEntryPrefab;
+    public GameObject cameraPreview;
     public float lineWidth = 0.05f;
 
     private List<GameObject> animationList;
+    private List<AnimationClip> animationClipList;
     private GameObject extractor;
     private string qualifier = "*.anim";
     private string saveDirectory;
@@ -23,13 +26,12 @@ public class AnimationManager : MonoBehaviour
     private bool scriptIsEnabled = false;
     private AnimationClip currentAnimationClip;
     private List<GameObject> visualizers;
-    private bool overrideExistingCoordinates = false;
-    private bool refreshAnimation = false;
     private Dictionary<AnimationClip, List<Vector3>> clipDictionary;
 
     // Start is called before the first frame update
     void Start()
     {
+        DisableScript();
         visualizers = new List<GameObject>();
         extractor = Instantiate(extractorPrefab);
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
@@ -65,6 +67,7 @@ public class AnimationManager : MonoBehaviour
             string parentDirectory = Path.Combine(new DirectoryInfo(sessionDirectory).Parent.Name + "/", new DirectoryInfo(file).Parent.Name + "/");
             string path = Path.Combine(parentDirectory, Path.GetFileNameWithoutExtension(file));
             path = path.Replace("/", "\\");
+            Debug.Log(path);
             LoadAnimation(path);
         }
     }
@@ -74,7 +77,7 @@ public class AnimationManager : MonoBehaviour
     {
         currentAnimationClip = Resources.Load<AnimationClip>(path);
         currentAnimationClip.legacy = false; // Disable legacy mode for loaded AnimationClip to ensure compatibility with Animator-component
-        overrideExistingCoordinates = true;
+        animationClipList.Add(currentAnimationClip);
         UpdateDictionary(currentAnimationClip, new List<Vector3>()); // Store animation in dictionary with temporary empty list of coordinates
     }
 
@@ -112,7 +115,6 @@ public class AnimationManager : MonoBehaviour
     // Add the keyvaluepair to the dictionary
     {
         clipDictionary.Add(clip, coordinates);
-        overrideExistingCoordinates = false;
     }
 
     private void UpdateAnimationBrowser()
@@ -147,62 +149,27 @@ public class AnimationManager : MonoBehaviour
         if (child != null)
         // Check if LineRenderer for clip already exists in the scene
         {
-            if (refreshAnimation)
-            // Replace existing object with new LineRenderer
-            {
-                Destroy(child.gameObject); // Remove existing object
-
-                GameObject currentVisualizer;
-                currentVisualizer = Instantiate(visualizerPrefab, lineContainer.transform, true); // Instantiate prefab
-                currentVisualizer.name = clip.name; // Assign name of AnimationClip to instantiated object
-
-                // Setup for LineRenderer
-                LineRenderer line = currentVisualizer.GetComponent<LineRenderer>();
-                line.startWidth = lineWidth;
-                line.endWidth = lineWidth;
-                line.positionCount = coordinates.Count; // Set point count of line depending on given clip
-
-                for (int index = 0; index < coordinates.Count; index++)
-                // Add every position to line
-                {
-                    line.SetPosition(index, coordinates[index]);
-                }
-
-                SetLineColor(line);
-                SetAnimationInfo(currentVisualizer, clip, line, targetPosition);
-
-                visualizers.Add(currentVisualizer); // Store instance in list
-                refreshAnimation = false;
-            }
-
-            else
-            {
-                Debug.Log("Visualizer for " + clip.name + " already exists");
-            }
+            Destroy(child.gameObject); // Remove existing object
         }
 
-        else
+        GameObject currentVisualizer;
+        currentVisualizer = Instantiate(visualizerPrefab, lineContainer.transform, true); // Instantiate prefab
+        currentVisualizer.name = clip.name; // Assign name of AnimationClip to instantiated objec
+        // Setup for LineRenderer
+        LineRenderer line = currentVisualizer.GetComponent<LineRenderer>();
+        line.startWidth = lineWidth;
+        line.endWidth = lineWidth;
+        line.positionCount = coordinates.Count; // Set point count of line depending on given clip
+
+        for (int index = 0; index < coordinates.Count; index++)
+        // Add every position to line
         {
-            GameObject currentVisualizer;
-            currentVisualizer = Instantiate(visualizerPrefab, lineContainer.transform, true);
-            currentVisualizer.name = clip.name;
-
-            LineRenderer line = currentVisualizer.GetComponent<LineRenderer>();
-            line.startWidth = lineWidth;
-            line.endWidth = lineWidth;
-            line.positionCount = coordinates.Count;
-
-            for (int index = 0; index < coordinates.Count; index++)
-            {
-                line.SetPosition(index, coordinates[index]);
-            }
-
-            SetLineColor(line);
-            SetAnimationInfo(currentVisualizer, clip, line, targetPosition);
-
-            visualizers.Add(currentVisualizer);
-            refreshAnimation = false;
+            line.SetPosition(index, coordinates[index]);
         }
+
+        SetLineColor(line);
+        SetAnimationInfo(currentVisualizer, clip, line, targetPosition);
+        visualizers.Add(currentVisualizer); // Store instance in list
     }
 
     private Vector3 CalculateBounds(List<Vector3> coordinates)
@@ -303,21 +270,61 @@ public class AnimationManager : MonoBehaviour
     void ResetFileIndex()
     {
         clipDictionary = null;
+        animationClipList = null;
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
+        animationClipList = new List<AnimationClip>();
     }
 
-    void ResetLineRenderers()
+    public void ToggleVisibility(string name)
     {
+        bool currentStatus = lineContainer.gameObject.transform.Find(name).gameObject.activeSelf;
+        lineContainer.gameObject.transform.Find(name).gameObject.SetActive(!currentStatus);
+    }
 
+    public void DeleteAnimation(string name)
+    {
+        foreach (var item in visualizers)
+        // Remove visualizer and LineRenderer
+        {
+            if (item.name == name)
+            {
+                Destroy(item.gameObject);
+                visualizers.Remove(item);
+            }
+        }
+
+        foreach (var item in animationClipList)
+        // Remove AniamtionClip
+        {
+            if (item.name == name)
+            {
+                animationClipList.Remove(item);
+                clipDictionary.Remove(item);
+            }
+        }
+
+        string deleteQualifier = name + ".*";
+        
+        foreach (var file in Directory.GetFiles(saveDirectory, deleteQualifier, SearchOption.AllDirectories))
+        // Delete file from disk
+        {
+            File.Delete(file.ToString());
+        }
     }
 
     public void DisableScript()
     {
         scriptIsEnabled = false;
+        lineContainer.gameObject.SetActive(false);
+        animationBrowser.gameObject.SetActive(false);
+        cameraPreview.gameObject.SetActive(false);
     }
 
     public void EnableScript()
     {
         scriptIsEnabled = true;
+        lineContainer.gameObject.SetActive(true);
+        animationBrowser.gameObject.SetActive(true);
+        cameraPreview.gameObject.SetActive(true);
     }
 }
