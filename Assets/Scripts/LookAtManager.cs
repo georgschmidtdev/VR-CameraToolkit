@@ -14,8 +14,8 @@ public class LookAtManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DisableScript();
-        vrCamera = GameObject.FindWithTag("VRCamera");
+        //DisableScript();
+        vrCamera = GameObject.FindWithTag("MainCamera");
         ConstraintSource source = new ConstraintSource();
         source.sourceTransform = vrCamera.transform;
         constraint = gameObject.GetComponent<LookAtConstraint>();
@@ -25,14 +25,7 @@ public class LookAtManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       if (scriptIsEnabled)
-       {
-           constraint.constraintActive = true;
-       }
-       else
-       {
-           constraint.constraintActive = false;
-       }
+       
     }
 
     public void DisableScript()

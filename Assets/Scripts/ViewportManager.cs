@@ -6,6 +6,7 @@ using TMPro;
 
 public class ViewportManager : MonoBehaviour
 {
+    public GameObject virtualViewport;
     public Camera viewportCamera;
     public Canvas viewportCanvas;
     public Canvas indicatorCanvas;
@@ -35,6 +36,7 @@ public class ViewportManager : MonoBehaviour
     private Vector2 panavisionRatio = new Vector2(2.39f, 1.0f);
     private Dictionary<AspectRatio, Vector2> aspectRatioDictionary;
     private float currentAspectRatio = 0.0f;
+    private GameObject vrCamera;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +52,7 @@ public class ViewportManager : MonoBehaviour
 
         viewport = viewportCanvas.GetComponent<RectTransform>();
         indicators = indicatorCanvas.GetComponent<RectTransform>();
+        vrCamera = GameObject.FindWithTag("MainCamera");
 
         recordingDot = recordingIndicator.GetComponent<Image>();
         framerateText = framerateIndicator.GetComponent<TextMeshProUGUI>();
@@ -107,6 +110,7 @@ public class ViewportManager : MonoBehaviour
 
     public void ResetViewportPosition()
     {
-        Vector3 defaultPosition = gameObject.transform.position + new Vector3(0f, 0.5f, 0.5f);
+        Vector3 defaultPosition = vrCamera.transform.position + new Vector3(0f, -0.2f, 0.5f);
+        virtualViewport.gameObject.transform.position = defaultPosition;
     }
 }

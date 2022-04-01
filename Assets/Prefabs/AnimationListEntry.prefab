@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7280107409578257739}
   - component: {fileID: 7280107409578257737}
   - component: {fileID: 7280107409578257736}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 7280107409626696223}
   - component: {fileID: 7280107409626696222}
   - component: {fileID: 7280107409626696209}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DeleteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 7280107410773233221}
   - component: {fileID: 7280107410773233220}
   - component: {fileID: 7280107410773233223}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: VisibilityToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -369,9 +369,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
+    m_PressedColor: {r: 0.3325153, g: 0.9716981, b: 0.12375401, a: 1}
+    m_SelectedColor: {r: 0.9553981, g: 1, b: 0, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 7280107410858242136}
   - component: {fileID: 7280107410858242139}
   - component: {fileID: 2061008293182962286}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: AnimationListEntry
   m_TagString: Untagged
   m_Icon: {fileID: 0}

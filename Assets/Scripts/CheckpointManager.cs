@@ -26,6 +26,7 @@ public class CheckpointManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DisableScript();
         instancedCheckpoints = new List<GameObject>();
     }
 
@@ -83,10 +84,12 @@ public class CheckpointManager : MonoBehaviour
     public void DisableScript()
     {
         scriptIsEnabled = false;
+        checkpointRay.gameObject.SetActive(false);
     }
 
     public void EnableScript()
     {
         scriptIsEnabled = true;
+        checkpointRay.gameObject.SetActive(true);
     }
 }

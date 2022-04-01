@@ -26,11 +26,14 @@ public class BrowserEntryManager : MonoBehaviour
 
     public void ToggleVisibility()
     {
+        Debug.Log("Toggle vis for "+ animationName.text);
         animationManager.ToggleVisibility(animationName.text);
     }
 
     public void DeleteEntry()
     {
+        Debug.Log("Deleted " + animationName.text);
         animationManager.DeleteAnimation(animationName.text);
+        Destroy(gameObject);
     }
 }

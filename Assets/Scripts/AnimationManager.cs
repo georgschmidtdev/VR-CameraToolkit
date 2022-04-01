@@ -47,11 +47,16 @@ public class AnimationManager : MonoBehaviour
 
         if (Input.GetKeyDown("n"))
         {
-            IndexAnimations();
-            ExtractCoordinates();
-            UpdateAnimationBrowser();
+            BuildAnimations();
         }
     }  
+
+    void BuildAnimations()
+    {
+        IndexAnimations();
+        ExtractCoordinates();
+        UpdateAnimationBrowser();
+    }
 
     void IndexAnimations()
     // Search the Resources folder for existing .anim AnimationClips
@@ -78,7 +83,6 @@ public class AnimationManager : MonoBehaviour
         currentAnimationClip = Resources.Load<AnimationClip>(path);
         currentAnimationClip.legacy = false; // Disable legacy mode for loaded AnimationClip to ensure compatibility with Animator-component
         animationClipList.Add(currentAnimationClip);
-        UpdateDictionary(currentAnimationClip, new List<Vector3>()); // Store animation in dictionary with temporary empty list of coordinates
     }
 
 
@@ -92,22 +96,22 @@ public class AnimationManager : MonoBehaviour
         animator.avatar = avatar;
         animator.runtimeAnimatorController = overrideController;
 
-        foreach (var clip in clipDictionary)
+        foreach (var clip in animationClipList)
         {
-            overrideController["DefaultAnimation"] = clip.Key; // Replace placeholder Animation with current AnimationClip
+            overrideController["DefaultAnimation"] = clip; // Replace placeholder Animation with current AnimationClip
 
-            for (float time = 0.0f; time < clip.Key.length; time += (1.0f / clip.Key.frameRate))
+            for (float time = 0.0f; time < clip.length; time += (1.0f / clip.frameRate))
             // Step through Animation one timestep at a time
             {
-                float normalizedTime = Mathf.InverseLerp(0.0f, clip.Key.length, time);
+                float normalizedTime = Mathf.InverseLerp(0.0f, clip.length, time);
                 
                 animator.SetTarget(AvatarTarget.Body, normalizedTime);
                 animator.Update(time); // Update Animator to current timestep
                 coordinates.Add(animator.targetPosition); // Save current location
             }
 
-            VisualizeAnimation(clip.Key, coordinates);
-            UpdateDictionary(clip.Key, coordinates);
+            VisualizeAnimation(clip, coordinates);
+            UpdateDictionary(clip, coordinates);
         }
     }
 
@@ -154,6 +158,7 @@ public class AnimationManager : MonoBehaviour
 
         GameObject currentVisualizer;
         currentVisualizer = Instantiate(visualizerPrefab, lineContainer.transform, true); // Instantiate prefab
+        currentVisualizer.gameObject.SetActive(false); //
         currentVisualizer.name = clip.name; // Assign name of AnimationClip to instantiated objec
         // Setup for LineRenderer
         LineRenderer line = currentVisualizer.GetComponent<LineRenderer>();
@@ -214,8 +219,8 @@ public class AnimationManager : MonoBehaviour
         Image background = canvas.gameObject.transform.GetChild(3).GetComponent<Image>();
 
         name.text = clip.name;
-        length.text = clip.length.ToString();
-        frameRate.text = clip.frameRate.ToString();
+        length.text = clip.length.ToString() + " Seconds";
+        frameRate.text = clip.frameRate.ToString() + " fps";
         background.color = GetBlendedColor(line);
 
         canvas.transform.position = target;
@@ -283,33 +288,16 @@ public class AnimationManager : MonoBehaviour
 
     public void DeleteAnimation(string name)
     {
-        foreach (var item in visualizers)
-        // Remove visualizer and LineRenderer
-        {
-            if (item.name == name)
-            {
-                Destroy(item.gameObject);
-                visualizers.Remove(item);
-            }
-        }
-
-        foreach (var item in animationClipList)
-        // Remove AniamtionClip
-        {
-            if (item.name == name)
-            {
-                animationClipList.Remove(item);
-                clipDictionary.Remove(item);
-            }
-        }
-
         string deleteQualifier = name + ".*";
         
         foreach (var file in Directory.GetFiles(saveDirectory, deleteQualifier, SearchOption.AllDirectories))
         // Delete file from disk
         {
+            Debug.Log(file.ToString());
             File.Delete(file.ToString());
         }
+
+        BuildAnimations();
     }
 
     public void DisableScript()

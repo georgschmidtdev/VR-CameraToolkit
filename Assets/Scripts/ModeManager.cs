@@ -20,7 +20,7 @@ public class ModeManager : MonoBehaviour
     public List<GameObject> radialMenuItems;
     public Color defaultColor = Color.white;
     public Color highlightedColor = Color.blue;
-    public enum InteractionMode{none, recording, planning, visualizing, exporting};
+    public enum InteractionMode{none, recording, planning, visualizing, explore};
     public InteractionMode interactionMode;
 
     private InputDevice device;
@@ -29,6 +29,7 @@ public class ModeManager : MonoBehaviour
     private AnimationRecorder animationRecorder;
     private CheckpointManager checkpointManager;
     private AnimationManager animationManager;
+    private TeleportationController teleportationController;
     private Vector2 inputAxis;
     private List<Image> radialMenuSprites = new List<Image>();
     private Image selectedSprite;
@@ -41,6 +42,7 @@ public class ModeManager : MonoBehaviour
         animationRecorder = GetComponent<AnimationRecorder>();
         checkpointManager = GetComponent<CheckpointManager>();
         animationManager = GetComponent<AnimationManager>();
+        teleportationController = GetComponent<TeleportationController>();
         //DeactivateScripts(); // Make sure all function scripts are disabled by default
 
         radialMenuCanvas.gameObject.SetActive(false); // Disable UI for mode selection on startup
@@ -106,20 +108,23 @@ public class ModeManager : MonoBehaviour
     // See CheckIfActive()
     {
         InputHelpers.IsPressed(device, selectionButton, out bool isSelected);
-        
-        if (isSelected && !wasSelected)
-        {
-            wasSelected = true;
-            ActivateScript(interactionMode);
-            ShowCurrentModeSprite();
-            ToggleVisibility();
-            return true;
-        }
 
-        else if (!isSelected && wasSelected)
+        if (radialMenuCanvas.gameObject.activeSelf)
         {
-            wasSelected = false;
-            return false;
+            if (isSelected && !wasSelected)
+            {
+                wasSelected = true;
+                ActivateScript(interactionMode);
+                ShowCurrentModeSprite();
+                ToggleVisibility();
+                return true;
+            }
+
+            else
+            {
+                wasSelected = false;
+                return false;
+            }
         }
 
         else
@@ -188,7 +193,7 @@ public class ModeManager : MonoBehaviour
             //Debug.Log("Right");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[3];
-            interactionMode = InteractionMode.exporting;
+            interactionMode = InteractionMode.explore;
         }
 
         else
@@ -226,7 +231,7 @@ public class ModeManager : MonoBehaviour
         DeactivateScripts();
         if (mode == InteractionMode.none)
         {
-            Debug.Log("Default mode selected");
+            Debug.Log("No mode selected");
         }
 
         if (mode == InteractionMode.recording)
@@ -241,8 +246,9 @@ public class ModeManager : MonoBehaviour
             Debug.Log("Planning");
         }
 
-        if (mode == InteractionMode.exporting)
+        if (mode == InteractionMode.explore)
         {
+            teleportationController.EnableScript();
             Debug.Log("TODO: Export functionality");
         }
 
