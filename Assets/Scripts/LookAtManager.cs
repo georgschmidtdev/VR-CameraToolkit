@@ -9,7 +9,6 @@ public class LookAtManager : MonoBehaviour
 
     private GameObject vrCamera;
     private LookAtConstraint constraint;
-    private bool scriptIsEnabled = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,17 +25,5 @@ public class LookAtManager : MonoBehaviour
     void Update()
     {
        
-    }
-
-    public void DisableScript()
-    {
-        scriptIsEnabled = false;
-        informationCanvas.gameObject.SetActive(false);
-    }
-
-    public void EnableScript()
-    {
-        scriptIsEnabled = true;
-        informationCanvas.gameObject.SetActive(true);
     }
 }

@@ -130,7 +130,7 @@ public class AnimationManager : MonoBehaviour
 
         foreach (var item in clipDictionary)
         {
-            currentListEntry = Instantiate(listEntryPrefab, parent: animationBrowserList.transform);
+            currentListEntry = Instantiate(listEntryPrefab, parent: animationBrowserList.transform, true);
             currentEntryName = currentListEntry.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
 
             currentListEntry.name = item.Key.name;
