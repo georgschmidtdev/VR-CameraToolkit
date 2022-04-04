@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Rig
   - VRCamera
+  - VirtualViewport
   layers:
   - Default
   - TransparentFX
