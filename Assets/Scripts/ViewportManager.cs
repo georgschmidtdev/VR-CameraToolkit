@@ -19,9 +19,9 @@ public class ViewportManager : MonoBehaviour
     public AspectRatio aspectRatio;
     public enum FocalLength {Default, Wide, Classic, Normal, Portrait, Tele};
     public FocalLength focalLength;
-    public GameObject framerateDropdown;
-    public GameObject aspectRatioDropdown;
-    public GameObject focalLengthDropdown;
+    public TMP_Dropdown framerateDropdown;
+    public TMP_Dropdown aspectRatioDropdown;
+    public TMP_Dropdown focalLengthDropdown;
 
     private GameObject vrCamera;
     private RectTransform viewport;
@@ -40,22 +40,22 @@ public class ViewportManager : MonoBehaviour
     private Vector2 film35Ratio = new Vector2(1.85f, 1.0f);
     private Vector2 panavisionRatio = new Vector2(2.39f, 1.0f);
     private Dictionary<AspectRatio, Vector2> aspectRatioDictionary;
-    private float currentAspectRatio = 0.0f;
-    private float defaultFocal = 36.0f;
+    private int currentFramerate = 24;
+    private float currentAspectRatio = 1.0f;
+    private float currentFocalLength = 36.0f;
     private float wideFocal = 25.0f;
     private float classicFocal = 36.0f;
     private float normalFocal = 50.0f;
     private float portraitFocal = 80.0f;
     private float teleFocal = 135.0f;
     private Dictionary<FocalLength, float> focalLengthDictionary;
+    private TMP_Dropdown framerateDropdownComponent;
+    private TMP_Dropdown aspectRatioDropdownComponent;
+    private TMP_Dropdown focalLengthDropdownComponent;
 
     // Start is called before the first frame update
     void Start()
     {
-        VariableSetup();
-        UpdateViewport();
-        UpdateInterface();
-
         vrCamera = GameObject.FindWithTag("MainCamera");
         viewport = viewportCanvas.GetComponent<RectTransform>();
         indicators = indicatorCanvas.GetComponent<RectTransform>();
@@ -63,6 +63,10 @@ public class ViewportManager : MonoBehaviour
         framerateText = framerateIndicator.GetComponent<TextMeshProUGUI>();
         focalLengthText = focalLengthIndicator.GetComponent<TextMeshProUGUI>();
         aspectRatioText = aspectRatioIndicator.GetComponent<TextMeshProUGUI>();
+
+        VariableSetup();
+        UpdateViewport();
+        UpdateInterface();
     }
 
     // Update is called once per frame
@@ -87,12 +91,32 @@ public class ViewportManager : MonoBehaviour
         aspectRatioDictionary.Add(AspectRatio.Panavision, panavisionRatio);
 
         focalLengthDictionary = new Dictionary<FocalLength, float>();
-        focalLengthDictionary.Add(FocalLength.Default, defaultFocal);
         focalLengthDictionary.Add(FocalLength.Wide, wideFocal);
         focalLengthDictionary.Add(FocalLength.Classic, classicFocal);
         focalLengthDictionary.Add(FocalLength.Normal, normalFocal);
         focalLengthDictionary.Add(FocalLength.Portrait, portraitFocal);
         focalLengthDictionary.Add(FocalLength.Tele, teleFocal);
+
+        foreach (var item in framerates)
+        {
+            TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
+            newOption.text = item.ToString();
+            //framerateDropdown.options.Add(newOption);
+        }
+
+        foreach (var item in aspectRatioDictionary)
+        {
+            TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
+            newOption.text = item.Value.ToString();
+            //aspectRatioDropdown.options.Add(newOption);
+        }
+
+        foreach (var item in focalLengthDictionary)
+        {
+            TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
+            newOption.text = item.Value.ToString();
+            //focalLengthDropdown.options.Add(newOption);
+        }
     }
 
     void UpdateViewport()
