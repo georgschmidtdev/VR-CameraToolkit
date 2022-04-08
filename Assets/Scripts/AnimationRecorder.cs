@@ -20,9 +20,7 @@ public class AnimationRecorder : MonoBehaviour
     public string customName = "";
     public enum NamingConvention {Random, Prefix, Custom};
     public NamingConvention namingConvention;
-    public static float framerate = 24f;
-    public static float focalLength = 35f;
-
+    public int framerate = 24;
     private GameObjectRecorder recorder;
     private string sessionDirectory;
     private string sessionId;
@@ -74,7 +72,7 @@ public class AnimationRecorder : MonoBehaviour
     private void StartRecording()
     {
         Debug.Log("Recording started");
-        ViewportManager.StartRecordingIndicator();
+        viewportManager.StartRecordingIndicator();
 
         sessionDirectory = SessionManager.GetSessionDirectory();
         canRecord = true;
@@ -83,7 +81,7 @@ public class AnimationRecorder : MonoBehaviour
 
     private void StopRecording()
     {
-        ViewportManager.StopRecordingIndicator();
+        viewportManager.StopRecordingIndicator();
 
         canRecord = false;
         recorder.SaveToClip(currentClip);
@@ -184,13 +182,9 @@ public class AnimationRecorder : MonoBehaviour
         currentClip = clip;
     }
 
-    public static List<float> GetCameraSettings()
+    public void SetFramerate(int fps)
     {
-        List<float> cameraSettings = new List<float>();
-        cameraSettings.Add(framerate);
-        cameraSettings.Add(focalLength);
-
-        return cameraSettings;
+        framerate = fps;
     }
 
     public void DisableScript()

@@ -999,7 +999,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.1}
   m_SizeDelta: {x: 0.5, y: 0.5}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &142599956
@@ -2732,12 +2732,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualViewport: {fileID: 514779302}
   viewportCamera: {fileID: 2145354543}
-  viewportCanvas: {fileID: 1748434668}
   indicatorCanvas: {fileID: 402088210}
-  recordingIndicator: {fileID: 416793514}
-  framerateIndicator: {fileID: 137991208}
-  focalLengthIndicator: {fileID: 1944458074}
-  aspectRatioIndicator: {fileID: 616294863}
+  framerateIndicator: {fileID: 137991210}
+  focalLengthIndicator: {fileID: 1944458076}
+  aspectRatioIndicator: {fileID: 616294865}
+  viewport: {fileID: 1748434664}
+  indicators: {fileID: 402088206}
+  recordingIndicator: {fileID: 416793516}
   framerates: 18000000190000001e000000320000003c00000078000000
   aspectRatio: 0
   focalLength: 0
@@ -4225,7 +4226,19 @@ MonoBehaviour:
     m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477678760}
+        m_TargetAssemblyTypeName: ViewportManager, Assembly-CSharp
+        m_MethodName: UpdateCameraSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &929518904
 MonoBehaviour:
@@ -4307,7 +4320,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.1}
   m_SizeDelta: {x: 0.3, y: 0.3}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &980127361
@@ -5889,7 +5902,19 @@ MonoBehaviour:
     m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477678760}
+        m_TargetAssemblyTypeName: ViewportManager, Assembly-CSharp
+        m_MethodName: UpdateCameraSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &1492432203
 MonoBehaviour:
@@ -6887,7 +6912,19 @@ MonoBehaviour:
     m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 477678760}
+        m_TargetAssemblyTypeName: ViewportManager, Assembly-CSharp
+        m_MethodName: UpdateCameraSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &1748826373
 MonoBehaviour:
@@ -8921,7 +8958,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145365280}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8931,10 +8968,10 @@ RectTransform:
   - {fileID: 1748826371}
   m_Father: {fileID: 309841870}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.1}
   m_SizeDelta: {x: 0.5, y: 0.3}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &2145365282

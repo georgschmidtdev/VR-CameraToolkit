@@ -8,30 +8,24 @@ public class ViewportManager : MonoBehaviour
 {
     public GameObject virtualViewport;
     public Camera viewportCamera;
-    public Canvas viewportCanvas;
     public Canvas indicatorCanvas;
-    public GameObject recordingIndicator;
-    public GameObject framerateIndicator;
-    public GameObject focalLengthIndicator;
-    public GameObject aspectRatioIndicator;
-    public int[] framerates = new int[]{24, 25, 30, 50, 60, 120};
-    public enum AspectRatio {Standard, Square, HDTV, Still35, Widescreen, Film35, Panavision};
-    public AspectRatio aspectRatio;
-    public enum FocalLength {Default, Wide, Classic, Normal, Portrait, Tele};
-    public FocalLength focalLength;
+    public TextMeshProUGUI framerateIndicator;
+    public TextMeshProUGUI focalLengthIndicator;
+    public TextMeshProUGUI aspectRatioIndicator;
+    public RectTransform viewport;
+    public RectTransform indicators;
+    public Image recordingIndicator;
     public TMP_Dropdown framerateDropdown;
     public TMP_Dropdown aspectRatioDropdown;
     public TMP_Dropdown focalLengthDropdown;
 
     private GameObject vrCamera;
-    private RectTransform viewport;
-    private RectTransform indicators;
-    private static Image recordingDot;
-    private TextMeshProUGUI framerateText;
-    private TextMeshProUGUI focalLengthText;
-    private TextMeshProUGUI aspectRatioText;
+    private AnimationRecorder animationRecorder;
     private static Color defaultColor = Color.white;
     private static Color recordingColor = Color.red;
+    private int[] framerates = new int[]{24, 25, 30, 50, 60, 120};
+    private List<Vector2> aspectRatios;
+    private List<float> focalLengths;
     private Vector2 standardRatio = new Vector2(4.0f, 3.0f);
     private Vector2 squareRatio = new Vector2(1.0f, 1.0f);
     private Vector2 hdtvRatio = new Vector2(16.0f, 9.0f);
@@ -39,93 +33,89 @@ public class ViewportManager : MonoBehaviour
     private Vector2 widescreenRatio = new Vector2(14.0f, 9.0f);
     private Vector2 film35Ratio = new Vector2(1.85f, 1.0f);
     private Vector2 panavisionRatio = new Vector2(2.39f, 1.0f);
-    private Dictionary<AspectRatio, Vector2> aspectRatioDictionary;
-    private int currentFramerate = 24;
-    private float currentAspectRatio = 1.0f;
-    private float currentFocalLength = 36.0f;
     private float wideFocal = 25.0f;
     private float classicFocal = 36.0f;
     private float normalFocal = 50.0f;
     private float portraitFocal = 80.0f;
     private float teleFocal = 135.0f;
-    private Dictionary<FocalLength, float> focalLengthDictionary;
-    private TMP_Dropdown framerateDropdownComponent;
-    private TMP_Dropdown aspectRatioDropdownComponent;
-    private TMP_Dropdown focalLengthDropdownComponent;
 
     // Start is called before the first frame update
     void Start()
     {
         vrCamera = GameObject.FindWithTag("MainCamera");
-        viewport = viewportCanvas.GetComponent<RectTransform>();
-        indicators = indicatorCanvas.GetComponent<RectTransform>();
-        recordingDot = recordingIndicator.GetComponent<Image>();
-        framerateText = framerateIndicator.GetComponent<TextMeshProUGUI>();
-        focalLengthText = focalLengthIndicator.GetComponent<TextMeshProUGUI>();
-        aspectRatioText = aspectRatioIndicator.GetComponent<TextMeshProUGUI>();
+        animationRecorder = GetComponent<AnimationRecorder>();
 
         VariableSetup();
-        UpdateViewport();
-        UpdateInterface();
+        UpdateCameraSettings();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("h"))
-        {
-            UpdateViewport();
-            UpdateInterface();
-        }
+        UpdateCameraSettings();
     }
 
     void VariableSetup()
     {
-        aspectRatioDictionary = new Dictionary<AspectRatio, Vector2>();
-        aspectRatioDictionary.Add(AspectRatio.Standard, standardRatio);
-        aspectRatioDictionary.Add(AspectRatio.Square, squareRatio);
-        aspectRatioDictionary.Add(AspectRatio.HDTV, hdtvRatio);
-        aspectRatioDictionary.Add(AspectRatio.Still35, still35Ratio);
-        aspectRatioDictionary.Add(AspectRatio.Widescreen, widescreenRatio);
-        aspectRatioDictionary.Add(AspectRatio.Film35, film35Ratio);
-        aspectRatioDictionary.Add(AspectRatio.Panavision, panavisionRatio);
+        aspectRatios = new List<Vector2>();
+        focalLengths = new List<float>();
 
-        focalLengthDictionary = new Dictionary<FocalLength, float>();
-        focalLengthDictionary.Add(FocalLength.Wide, wideFocal);
-        focalLengthDictionary.Add(FocalLength.Classic, classicFocal);
-        focalLengthDictionary.Add(FocalLength.Normal, normalFocal);
-        focalLengthDictionary.Add(FocalLength.Portrait, portraitFocal);
-        focalLengthDictionary.Add(FocalLength.Tele, teleFocal);
+        aspectRatios.Add(standardRatio);
+        aspectRatios.Add(squareRatio);
+        aspectRatios.Add(hdtvRatio);
+        aspectRatios.Add(still35Ratio);
+        aspectRatios.Add(widescreenRatio);
+        aspectRatios.Add(film35Ratio);
+        aspectRatios.Add(panavisionRatio);
 
+        focalLengths.Add(wideFocal);
+        focalLengths.Add(classicFocal);
+        focalLengths.Add(normalFocal);
+        focalLengths.Add(portraitFocal);
+        focalLengths.Add(teleFocal);
+
+        PopulateDropdownMenus();
+    }
+
+    void PopulateDropdownMenus()
+    {
         foreach (var item in framerates)
         {
             TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
             newOption.text = item.ToString();
-            //framerateDropdown.options.Add(newOption);
+            framerateDropdown.options.Add(newOption);
         }
 
-        foreach (var item in aspectRatioDictionary)
+        foreach (var item in aspectRatios)
         {
             TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
-            newOption.text = item.Value.ToString();
-            //aspectRatioDropdown.options.Add(newOption);
+            newOption.text = item.ToString();
+            aspectRatioDropdown.options.Add(newOption);
         }
 
-        foreach (var item in focalLengthDictionary)
+        foreach (var item in focalLengths)
         {
             TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
-            newOption.text = item.Value.ToString();
-            //focalLengthDropdown.options.Add(newOption);
+            newOption.text = item.ToString();
+            focalLengthDropdown.options.Add(newOption);
         }
+    }
+
+    public void UpdateCameraSettings()
+    {
+        UpdateViewport();
+        UpdateInterface();
+        viewportCamera.focalLength = focalLengths[focalLengthDropdown.value];
+        animationRecorder.SetFramerate(framerates[framerateDropdown.value]);
     }
 
     void UpdateViewport()
     // Apply changes
     {
-        currentAspectRatio = aspectRatioDictionary[aspectRatio].x / aspectRatioDictionary[aspectRatio].y;
+        float currentAspectRatio = aspectRatios[aspectRatioDropdown.value].x / aspectRatios[aspectRatioDropdown.value].y;
 
         float width = 0.5f;
-        float height = Mathf.Lerp(0.0f, width, Mathf.InverseLerp(0.0f, aspectRatioDictionary[aspectRatio].x, aspectRatioDictionary[aspectRatio].y)); // Calculate viewport height based on the given aspect ratio in relation to the maximum of the width
+        float height = Mathf.Lerp(0.0f, width, Mathf.InverseLerp(0.0f, aspectRatios[aspectRatioDropdown.value].x, aspectRatios[aspectRatioDropdown.value].y)); // Calculate viewport height based on the given aspect ratio in relation to the maximum of the width
         Vector2 newViewportSize = new Vector2(width, height); // Create new Vector2 to resize the viewport panel
         Vector2 newIndicatorSize = new Vector2(newViewportSize.x, newViewportSize.y + 0.06f); // Copy size of viewport for interface with offset for text elements
 
@@ -137,21 +127,19 @@ public class ViewportManager : MonoBehaviour
 
     void UpdateInterface()
     {
-        List<float> cameraSettings = new List<float>();
-        cameraSettings = AnimationRecorder.GetCameraSettings();
-        framerateText.text = cameraSettings[0].ToString() + " fps";
-        focalLengthText.text = cameraSettings[1].ToString() + " mm";
-        aspectRatioText.text = aspectRatio.ToString() + " - " + currentAspectRatio.ToString();
+        framerateIndicator.text = framerateDropdown.value.ToString() + " fps";
+        focalLengthIndicator.text = focalLengthDropdown.value.ToString() + " mm";
+        aspectRatioIndicator.text = aspectRatios[aspectRatioDropdown.value].x.ToString() + ":" + aspectRatios[aspectRatioDropdown.value].y.ToString();
     }
 
-    public static void StartRecordingIndicator()
+    public void StartRecordingIndicator()
     {   
-        recordingDot.color = recordingColor;
+        recordingIndicator.color = recordingColor;
     }
 
-    public static void StopRecordingIndicator()
+    public void StopRecordingIndicator()
     {
-        recordingDot.color = defaultColor;
+        recordingIndicator.color = defaultColor;
     }
 
     public void ResetViewportPosition()
