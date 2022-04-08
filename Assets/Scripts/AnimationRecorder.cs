@@ -189,6 +189,7 @@ public class AnimationRecorder : MonoBehaviour
 
     public void DisableScript()
     {
+        StopRecording();
         scriptIsEnabled = false;
         viewport.gameObject.SetActive(false);
     }
