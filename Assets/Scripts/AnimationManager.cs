@@ -19,10 +19,12 @@ public class AnimationManager : MonoBehaviour
     public GameObject animationBrowserList;
     public GameObject listEntryPrefab;
     public GameObject cameraPreview;
+    public GameObject previewCamera;
     public float lineWidth = 0.05f;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
+    private Animation cameraPreviewAnimation;
     private List<GameObject> animationList;
     private List<AnimationClip> animationClipList;
     private GameObject extractor;
@@ -40,6 +42,7 @@ public class AnimationManager : MonoBehaviour
         visualizers = new List<GameObject>();
         extractor = Instantiate(extractorPrefab);
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
+        cameraPreviewAnimation = previewCamera.GetComponent<Animation>();
     }
 
     // Update is called once per frame
@@ -49,7 +52,7 @@ public class AnimationManager : MonoBehaviour
         {
             CheckIfActive();
         }
-    }  
+    }
 
     void CheckIfActive()
     // Unitys integrated GetKeyDown() function is not available for XR-Controller based inputs
@@ -73,6 +76,7 @@ public class AnimationManager : MonoBehaviour
 
     void BuildAnimations()
     {
+        ResetFileIndex(); // Clear already indexed files to prevent duplicates
         IndexAnimations();
         ExtractCoordinates();
         UpdateAnimationBrowser();
@@ -83,7 +87,6 @@ public class AnimationManager : MonoBehaviour
     {
         saveDirectory = SessionManager.GetSaveDirectory();
         sessionDirectory = SessionManager.GetSessionDirectory();
-        ResetFileIndex(); // Clear already indexed files to prevent dublicates
         
         foreach (var file in Directory.GetFiles(saveDirectory, qualifier, SearchOption.AllDirectories))
         // Iterate through each file in the directory and all its sub-directories
@@ -104,7 +107,6 @@ public class AnimationManager : MonoBehaviour
         currentAnimationClip.legacy = false; // Disable legacy mode for loaded AnimationClip to ensure compatibility with Animator-component
         animationClipList.Add(currentAnimationClip);
     }
-
 
     void ExtractCoordinates()
     // Extracts keyframed coordinates from AnimationClips to use for LineRenderer later
@@ -132,6 +134,9 @@ public class AnimationManager : MonoBehaviour
 
             VisualizeAnimation(clip, coordinates);
             UpdateDictionary(clip, coordinates);
+
+            clip.legacy = true;
+            UpdateAnimationPreviews(clip);
         }
     }
 
@@ -139,6 +144,11 @@ public class AnimationManager : MonoBehaviour
     // Add the keyvaluepair to the dictionary
     {
         clipDictionary.Add(clip, coordinates);
+    }
+
+    void UpdateAnimationPreviews(AnimationClip clip)
+    {
+        cameraPreviewAnimation.AddClip(clip, clip.name);
     }
 
     private void UpdateAnimationBrowser()
@@ -150,7 +160,7 @@ public class AnimationManager : MonoBehaviour
 
         foreach (var item in clipDictionary)
         {
-            currentListEntry = Instantiate(listEntryPrefab, parent: animationBrowserList.transform, true);
+            currentListEntry = Instantiate(listEntryPrefab, animationBrowserList.transform, false);
             currentEntryName = currentListEntry.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
 
             currentListEntry.name = item.Key.name;
@@ -294,6 +304,14 @@ public class AnimationManager : MonoBehaviour
 
     void ResetFileIndex()
     {
+        foreach (var item in clipDictionary)
+        {
+            DeleteAnimationVisualizer(item.Key.name);
+            DeleteAnimationPreview(item.Key.name);
+            DeleteBrowserEntry(item.Key.name);
+        }
+
+        // Reset all indexed animations
         clipDictionary = null;
         animationClipList = null;
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
@@ -301,23 +319,71 @@ public class AnimationManager : MonoBehaviour
     }
 
     public void ToggleVisibility(string name)
-    {
-        bool currentStatus = lineContainer.gameObject.transform.Find(name).gameObject.activeSelf;
-        lineContainer.gameObject.transform.Find(name).gameObject.SetActive(!currentStatus);
+    {   
+        foreach (Transform item in lineContainer.gameObject.transform)
+        {
+            if(item.name != name)
+            {
+                item.gameObject.SetActive(false);
+            }
+
+            else
+            {
+                item.gameObject.SetActive(!item.gameObject.activeSelf);
+            }
+        }        
+
+        UpdatePreviewAnimation(name);
     }
 
     public void DeleteAnimation(string name)
     {
+        DeleteAnimationVisualizer(name);
+        DeleteAnimationPreview(name);
+        DeleteBrowserEntry(name);
+        DeleteAnimationFile(name);
+    }
+
+    void DeleteAnimationVisualizer(string name)
+    // Delete visualizer
+    {
+        foreach (Transform item in lineContainer.gameObject.transform)
+        {
+            if (item.name == name)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+    }
+
+    void DeleteAnimationPreview(string name)
+    // Remove animation from camera preview
+    {
+        cameraPreviewAnimation.RemoveClip(name);
+    }
+
+    void DeleteBrowserEntry(string name)
+    {
+        Destroy(animationBrowserList.gameObject.transform.Find(name).gameObject);
+    }
+
+    void DeleteAnimationFile(string name)
+    // Delete file from disk
+    {
         string deleteQualifier = name + ".*";
         
         foreach (var file in Directory.GetFiles(saveDirectory, deleteQualifier, SearchOption.AllDirectories))
-        // Delete file from disk
         {
-            Debug.Log(file.ToString());
             File.Delete(file.ToString());
         }
+    }
 
-        BuildAnimations();
+    void UpdatePreviewAnimation(string name)
+    // Set camera preview to last active animation
+    {
+        cameraPreviewAnimation.clip = cameraPreviewAnimation.GetClip(name);
+        Debug.Log(cameraPreviewAnimation.clip.name);
+        cameraPreviewAnimation.Play();
     }
 
     public void DisableScript()
@@ -331,6 +397,7 @@ public class AnimationManager : MonoBehaviour
     public void EnableScript()
     {
         scriptIsEnabled = true;
+        BuildAnimations();
         lineContainer.gameObject.SetActive(true);
         animationBrowser.gameObject.SetActive(true);
         cameraPreview.gameObject.SetActive(true);

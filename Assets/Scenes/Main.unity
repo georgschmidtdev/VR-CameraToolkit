@@ -2677,7 +2677,7 @@ MonoBehaviour:
   activeObject: {fileID: 2145354541}
   viewport: {fileID: 514779302}
   inputDevice: 5
-  toggleRecordingInput: 4
+  toggleRecordingInput: 1
   customPrefix: 
   customName: 
   namingConvention: 0
@@ -2706,6 +2706,7 @@ MonoBehaviour:
   listEntryPrefab: {fileID: 7280107410858242141, guid: 950aa25fd7194924c9be4d6e49f98c56,
     type: 3}
   cameraPreview: {fileID: 195237008}
+  previewCamera: {fileID: 1463386193}
   lineWidth: 0.05
 --- !u!114 &477678759
 MonoBehaviour:
@@ -2731,7 +2732,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f22a47c7c1075cf45820612b101c63c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputDevice: 4
+  leftInputDevice: 4
+  rightInputDevice: 5
   activationButton: 11
   virtualViewport: {fileID: 514779302}
   cameraSettings: {fileID: 2145365280}
@@ -5608,8 +5610,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1463386196}
   - component: {fileID: 1463386195}
+  - component: {fileID: 1463386197}
   m_Layer: 0
-  m_Name: CameraPreview
+  m_Name: PreviewCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5673,6 +5676,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!111 &1463386197
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463386193}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &1467369565
 GameObject:
   m_ObjectHideFlags: 0
