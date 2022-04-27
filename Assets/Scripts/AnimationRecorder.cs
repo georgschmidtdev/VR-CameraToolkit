@@ -13,22 +13,19 @@ public class AnimationRecorder : MonoBehaviour
     public GameObject activeObject;
     public GameObject viewport;
     public XRNode inputDevice;
-    public InputHelpers.Button startRecordingInput;
-    public InputHelpers.Button stopRecordingInput;
-    public InputHelpers.Button deleteRecordingInput;
+    public InputHelpers.Button toggleRecordingInput;
     public string customPrefix = "";
     public string customName = "";
     public enum NamingConvention {Random, Prefix, Custom};
     public NamingConvention namingConvention;
     public int framerate = 24;
+
+    private bool scriptIsEnabled = false;
+    private bool wasActivated;
     private GameObjectRecorder recorder;
     private string sessionDirectory;
     private string sessionId;
     private string clipName;
-    private string startRecordingKey = "i";
-    private string stopRecordingKey = "o";
-    private string deleteRecordingKey = "p";
-    private bool scriptIsEnabled = false;
     private bool overwriteExistingFiles = false;
     private AnimationClip clip;
     private AnimationClip currentClip;
@@ -50,22 +47,40 @@ public class AnimationRecorder : MonoBehaviour
     {
         if (scriptIsEnabled)
         {
-            if (Input.GetKeyDown(startRecordingKey))
-            {
-                StartRecording();
-            }
+            CheckIfActive();
+        }
+    }
 
-            if (Input.GetKeyDown(stopRecordingKey))
-            {
-                StopRecording();
-                Debug.Log("Recording stopped");
-            }
+    void CheckIfActive()
+    // Unitys integrated GetKeyDown() function is not available for XR-Controller based inputs
+    // This function emulates the same behaviour for a given (InputDevice device) and button (activationButton)
+    {
+        InputDevice device = InputDevices.GetDeviceAtXRNode(inputDevice);
 
-            if (Input.GetKeyDown(deleteRecordingKey))
-            {
-                DeleteRecording();
-                Debug.Log("Recording deleted");
-            }
+        InputHelpers.IsPressed(device, toggleRecordingInput, out bool isPressed);
+        
+        if (isPressed && !wasActivated)
+        {
+            wasActivated = true;
+            ToggleRecording();
+        }
+        
+        else if (!isPressed && wasActivated)
+        {
+            wasActivated = false;
+        }
+    }
+
+    void ToggleRecording()
+    {
+        if (!canRecord)
+        {
+            StartRecording();
+        }
+
+        if (canRecord)
+        {
+            StopRecording();
         }
     }
 
@@ -76,11 +91,13 @@ public class AnimationRecorder : MonoBehaviour
 
         sessionDirectory = SessionManager.GetSessionDirectory();
         canRecord = true;
+
         CreateNewClip();
     }
 
     private void StopRecording()
     {
+        Debug.Log("Recording stopped");
         viewportManager.StopRecordingIndicator();
 
         canRecord = false;
@@ -111,23 +128,6 @@ public class AnimationRecorder : MonoBehaviour
                 AssetDatabase.SaveAssets();
             }
         }
-    }
-
-    private void DeleteRecording()
-    {
-        if (canRecord)
-        // Dont delete during recording
-        {
-            return;
-        }
-
-        if (true)
-        // File does not exist
-        {
-            return;
-        }
-        // ToDo:
-        // Rework saving functionality to avoid using UnityEditor namespace
     }
 
     private void LateUpdate()
@@ -189,7 +189,11 @@ public class AnimationRecorder : MonoBehaviour
 
     public void DisableScript()
     {
-        StopRecording();
+        if (!canRecord)
+        {
+            StopRecording();
+        }
+
         scriptIsEnabled = false;
         viewport.gameObject.SetActive(false);
     }

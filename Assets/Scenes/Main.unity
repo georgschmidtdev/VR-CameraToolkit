@@ -2676,13 +2676,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeObject: {fileID: 2145354541}
   viewport: {fileID: 514779302}
-  inputDevice: 0
-  startRecordingInput: 21
-  stopRecordingInput: 20
-  deleteRecordingInput: 18
+  inputDevice: 5
+  toggleRecordingInput: 4
   customPrefix: 
   customName: 
   namingConvention: 0
+  framerate: 24
 --- !u!114 &477678758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2695,6 +2694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba382ed456a91c41bc68c53b7d572f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputDevice: 4
+  activationButton: 1
   extractorPrefab: {fileID: 4256825643239708236, guid: f1c9a08af7bc5ed45a3d2982155eca5a,
     type: 3}
   visualizerPrefab: {fileID: 2876988662076849101, guid: 47a8bdebf86f83c4ea2be072605d5d94,
@@ -2730,7 +2731,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f22a47c7c1075cf45820612b101c63c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputDevice: 4
+  activationButton: 11
   virtualViewport: {fileID: 514779302}
+  cameraSettings: {fileID: 2145365280}
   viewportCamera: {fileID: 2145354543}
   indicatorCanvas: {fileID: 402088210}
   framerateIndicator: {fileID: 137991210}
@@ -2739,9 +2743,6 @@ MonoBehaviour:
   viewport: {fileID: 1748434664}
   indicators: {fileID: 402088206}
   recordingIndicator: {fileID: 416793516}
-  framerates: 18000000190000001e000000320000003c00000078000000
-  aspectRatio: 0
-  focalLength: 0
   framerateDropdown: {fileID: 929518903}
   aspectRatioDropdown: {fileID: 1492432202}
   focalLengthDropdown: {fileID: 1748826372}

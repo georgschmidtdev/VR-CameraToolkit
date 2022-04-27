@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR;
 
 public class ViewportManager : MonoBehaviour
 {
+    public XRNode inputDevice;
+    public InputHelpers.Button activationButton;
     public GameObject virtualViewport;
+    public GameObject cameraSettings;
     public Camera viewportCamera;
     public Canvas indicatorCanvas;
     public TextMeshProUGUI framerateIndicator;
@@ -19,6 +24,9 @@ public class ViewportManager : MonoBehaviour
     public TMP_Dropdown aspectRatioDropdown;
     public TMP_Dropdown focalLengthDropdown;
 
+    private bool scriptIsEnabled = false;
+    private bool wasActivated = false;
+    private InputDevice device;
     private GameObject vrCamera;
     private AnimationRecorder animationRecorder;
     private static Color defaultColor = Color.white;
@@ -44,7 +52,9 @@ public class ViewportManager : MonoBehaviour
     {
         vrCamera = GameObject.FindWithTag("MainCamera");
         animationRecorder = GetComponent<AnimationRecorder>();
+        device = InputDevices.GetDeviceAtXRNode(inputDevice);
 
+        DisableScript();
         VariableSetup();
         UpdateCameraSettings();
     }
@@ -52,7 +62,36 @@ public class ViewportManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateCameraSettings();
+        if (scriptIsEnabled)
+        {
+            CheckIfActive();
+            UpdateCameraSettings();
+        }
+    }
+
+    void CalculateFocalLength()
+    {
+        device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 inputAxis);
+
+        
+    }
+
+    void CheckIfActive()
+    // Unitys integrated GetKeyDown() function is not available for XR-Controller based inputs
+    // This function emulates the same behaviour for a given (InputDevice device) and button (activationButton)
+    {
+        InputHelpers.IsPressed(device, activationButton, out bool isPressed);
+        
+        if (isPressed && !wasActivated)
+        {
+            wasActivated = true;
+            ToggleVisibility();
+        }
+        
+        else if (!isPressed && wasActivated)
+        {
+            wasActivated = false;
+        }
     }
 
     void VariableSetup()
@@ -127,8 +166,8 @@ public class ViewportManager : MonoBehaviour
 
     void UpdateInterface()
     {
-        framerateIndicator.text = framerateDropdown.value.ToString() + " fps";
-        focalLengthIndicator.text = focalLengthDropdown.value.ToString() + " mm";
+        framerateIndicator.text = framerates[framerateDropdown.value].ToString() + " fps";
+        focalLengthIndicator.text = focalLengths[focalLengthDropdown.value].ToString() + " mm";
         aspectRatioIndicator.text = aspectRatios[aspectRatioDropdown.value].x.ToString() + ":" + aspectRatios[aspectRatioDropdown.value].y.ToString();
     }
 
@@ -146,5 +185,23 @@ public class ViewportManager : MonoBehaviour
     {
         Vector3 defaultPosition = vrCamera.transform.position + new Vector3(0f, -0.2f, 0.5f);
         virtualViewport.gameObject.transform.position = defaultPosition;
+    }
+
+    void ToggleVisibility()
+    {
+        cameraSettings.gameObject.SetActive(!cameraSettings.activeSelf);
+    }
+
+    public void DisableScript()
+    {
+        virtualViewport.gameObject.SetActive(false);
+        cameraSettings.gameObject.SetActive(false);
+        scriptIsEnabled = false;
+    }
+
+    public void EnableScript()
+    {
+        virtualViewport.gameObject.SetActive(true);
+        scriptIsEnabled = true;
     }
 }

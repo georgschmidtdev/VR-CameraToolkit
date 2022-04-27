@@ -5,9 +5,13 @@ using System.IO;
 using TMPro;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class AnimationManager : MonoBehaviour
 {
+    public XRNode inputDevice;
+    public InputHelpers.Button activationButton;
     public GameObject extractorPrefab;
     public GameObject visualizerPrefab;
     public GameObject lineContainer;
@@ -17,13 +21,14 @@ public class AnimationManager : MonoBehaviour
     public GameObject cameraPreview;
     public float lineWidth = 0.05f;
 
+    private bool scriptIsEnabled = false;
+    private bool wasActivated = false;
     private List<GameObject> animationList;
     private List<AnimationClip> animationClipList;
     private GameObject extractor;
     private string qualifier = "*.anim";
     private string saveDirectory;
     private string sessionDirectory;
-    private bool scriptIsEnabled = false;
     private AnimationClip currentAnimationClip;
     private List<GameObject> visualizers;
     private Dictionary<AnimationClip, List<Vector3>> clipDictionary;
@@ -42,14 +47,29 @@ public class AnimationManager : MonoBehaviour
     {
         if (scriptIsEnabled)
         {
-            
-        }
-
-        if (Input.GetKeyDown("n"))
-        {
-            BuildAnimations();
+            CheckIfActive();
         }
     }  
+
+    void CheckIfActive()
+    // Unitys integrated GetKeyDown() function is not available for XR-Controller based inputs
+    // This function emulates the same behaviour for a given (InputDevice device) and button (activationButton)
+    {
+        InputDevice device = InputDevices.GetDeviceAtXRNode(inputDevice);
+
+        InputHelpers.IsPressed(device, activationButton, out bool isPressed);
+        
+        if (isPressed && !wasActivated)
+        {
+            wasActivated = true;
+            BuildAnimations();
+        }
+        
+        else if (!isPressed && wasActivated)
+        {
+            wasActivated = false;
+        }
+    }
 
     void BuildAnimations()
     {
