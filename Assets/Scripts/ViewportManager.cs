@@ -8,7 +8,8 @@ using UnityEngine.XR;
 
 public class ViewportManager : MonoBehaviour
 {
-    public XRNode inputDevice;
+    public XRNode leftInputDevice;
+    public XRNode rightInputDevice;
     public InputHelpers.Button activationButton;
     public GameObject virtualViewport;
     public GameObject cameraSettings;
@@ -26,7 +27,8 @@ public class ViewportManager : MonoBehaviour
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
-    private InputDevice device;
+    private InputDevice leftDevice;
+    private InputDevice rightDevice;
     private GameObject vrCamera;
     private AnimationRecorder animationRecorder;
     private static Color defaultColor = Color.white;
@@ -46,17 +48,21 @@ public class ViewportManager : MonoBehaviour
     private float normalFocal = 50.0f;
     private float portraitFocal = 80.0f;
     private float teleFocal = 135.0f;
+    private Vector2 inputAxis;
+    private bool changingFocalLength = false;
 
     // Start is called before the first frame update
     void Start()
     {
         vrCamera = GameObject.FindWithTag("MainCamera");
         animationRecorder = GetComponent<AnimationRecorder>();
-        device = InputDevices.GetDeviceAtXRNode(inputDevice);
+        leftDevice = InputDevices.GetDeviceAtXRNode(leftInputDevice);
+        rightDevice = InputDevices.GetDeviceAtXRNode(rightInputDevice);
 
-        DisableScript();
         VariableSetup();
         UpdateCameraSettings();
+
+        DisableScript();
     }
 
     // Update is called once per frame
@@ -65,22 +71,40 @@ public class ViewportManager : MonoBehaviour
         if (scriptIsEnabled)
         {
             CheckIfActive();
+            CalculateFocalLength();
             UpdateCameraSettings();
         }
     }
 
     void CalculateFocalLength()
     {
-        device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 inputAxis);
-
+        float activationThreshhold = 0.5f;
+        Vector2 normalizedInput;
+        Vector2 initialVector;
+        rightDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out inputAxis);
+        normalizedInput = inputAxis.normalized;
         
+        if (inputAxis.magnitude > activationThreshhold && !changingFocalLength)
+        {
+            changingFocalLength = true;
+            initialVector = inputAxis;
+        }
+
+        else if (inputAxis.magnitude < activationThreshhold && changingFocalLength)
+        {
+            changingFocalLength = false;
+        }
+
+        else if (inputAxis.magnitude > activationThreshhold && changingFocalLength)
+        {
+        }
     }
 
     void CheckIfActive()
     // Unitys integrated GetKeyDown() function is not available for XR-Controller based inputs
     // This function emulates the same behaviour for a given (InputDevice device) and button (activationButton)
     {
-        InputHelpers.IsPressed(device, activationButton, out bool isPressed);
+        InputHelpers.IsPressed(leftDevice, activationButton, out bool isPressed);
         
         if (isPressed && !wasActivated)
         {
@@ -144,7 +168,6 @@ public class ViewportManager : MonoBehaviour
     {
         UpdateViewport();
         UpdateInterface();
-        viewportCamera.focalLength = focalLengths[focalLengthDropdown.value];
         animationRecorder.SetFramerate(framerates[framerateDropdown.value]);
     }
 
@@ -162,6 +185,7 @@ public class ViewportManager : MonoBehaviour
         indicators.sizeDelta = newIndicatorSize;
 
         viewportCamera.aspect = currentAspectRatio;
+        viewportCamera.focalLength = focalLengths[focalLengthDropdown.value];
     }
 
     void UpdateInterface()
