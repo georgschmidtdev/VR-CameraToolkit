@@ -29,7 +29,7 @@ public class AnimationRecorder : MonoBehaviour
     private bool overwriteExistingFiles = false;
     private AnimationClip clip;
     private AnimationClip currentClip;
-    private bool canRecord = true;
+    private bool canRecord = false;
     private int index;
     private List<AnimationClip> sessionClips;
     private ViewportManager viewportManager;
@@ -62,23 +62,15 @@ public class AnimationRecorder : MonoBehaviour
         if (isPressed && !wasActivated)
         {
             wasActivated = true;
-            ToggleRecording();
+            StartRecording();
         }
         
         else if (!isPressed && wasActivated)
         {
             wasActivated = false;
         }
-    }
 
-    void ToggleRecording()
-    {
-        if (!canRecord)
-        {
-            StartRecording();
-        }
-
-        if (canRecord)
+        else if (isPressed && wasActivated)
         {
             StopRecording();
         }
@@ -189,7 +181,7 @@ public class AnimationRecorder : MonoBehaviour
 
     public void DisableScript()
     {
-        if (!canRecord)
+        if (canRecord)
         {
             StopRecording();
         }

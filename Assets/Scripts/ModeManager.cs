@@ -27,6 +27,7 @@ public class ModeManager : MonoBehaviour
     private bool wasActivated = false;
     private bool wasSelected = false;
     private AnimationRecorder animationRecorder;
+    private ViewportManager viewportManager;
     private CheckpointManager checkpointManager;
     private AnimationManager animationManager;
     private TeleportationController teleportationController;
@@ -40,6 +41,7 @@ public class ModeManager : MonoBehaviour
     void Start()
     {
         animationRecorder = GetComponent<AnimationRecorder>();
+        viewportManager = GetComponent<ViewportManager>();
         checkpointManager = GetComponent<CheckpointManager>();
         animationManager = GetComponent<AnimationManager>();
         teleportationController = GetComponent<TeleportationController>();
@@ -136,8 +138,7 @@ public class ModeManager : MonoBehaviour
     void ToggleVisibility()
     // Toggle the visibility of the radial menu UI element
     {
-        bool status = radialMenuCanvas.gameObject.activeSelf;
-        radialMenuCanvas.gameObject.SetActive(!status);
+        radialMenuCanvas.gameObject.SetActive(!radialMenuCanvas.gameObject.activeSelf);
     }
 
     void InputSeperation(Vector2 inputVector)
@@ -237,31 +238,33 @@ public class ModeManager : MonoBehaviour
         if (mode == InteractionMode.recording)
         {
             animationRecorder.EnableScript();
-            Debug.Log("Recording");
+            viewportManager.EnableScript();
+            Debug.Log("Recording mode");
         }
 
         if (mode == InteractionMode.planning)
         {
             checkpointManager.EnableScript();
-            Debug.Log("Planning");
+            Debug.Log("Planning mode");
         }
 
         if (mode == InteractionMode.explore)
         {
             teleportationController.EnableScript();
-            Debug.Log("TODO: Export functionality");
+            Debug.Log("Exploration mode");
         }
 
         if (mode == InteractionMode.visualizing)
         {
             animationManager.EnableScript();
-            Debug.Log("Visualizing");
+            Debug.Log("Visualization mode");
         }
     }
 
     void DeactivateScripts()
     {
         animationRecorder.DisableScript();
+        viewportManager.DisableScript();
         checkpointManager.DisableScript();
         animationManager.DisableScript();
     }
