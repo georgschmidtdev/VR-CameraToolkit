@@ -93,13 +93,11 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
 
     public void SecondaryGrab(SelectEnterEventArgs interactor)
     {
-        Debug.Log("Secondary Grab");
         secondaryInteractor = interactor.interactorObject;
     }
 
     public void SecondaryRelease(SelectExitEventArgs interactor)
     {
-        Debug.Log("Secondary Release");
         secondaryInteractor = null;
     }
 }

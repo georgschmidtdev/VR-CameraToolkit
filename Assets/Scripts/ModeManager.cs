@@ -18,29 +18,34 @@ public class ModeManager : MonoBehaviour
     public float upperLimit = 0.5f;
     public Canvas radialMenuCanvas;
     public List<GameObject> radialMenuItems;
-    public Color defaultColor = Color.grey;
-    public Color highlightedColor = Color.red;
-    public enum InteractionMode{none, recording, planning, visualizing, exporting};
+    public Color defaultColor = Color.white;
+    public Color highlightedColor = Color.blue;
+    public enum InteractionMode{none, recording, planning, visualizing, explore};
     public InteractionMode interactionMode;
 
     private InputDevice device;
     private bool wasActivated = false;
     private bool wasSelected = false;
     private AnimationRecorder animationRecorder;
+    private ViewportManager viewportManager;
     private CheckpointManager checkpointManager;
     private AnimationManager animationManager;
+    private TeleportationController teleportationController;
     private Vector2 inputAxis;
     private List<Image> radialMenuSprites = new List<Image>();
     private Image selectedSprite;
+    private Image middleSprite;
     private Component selectedScript;
 
     // Start is called before the first frame update
     void Start()
     {
         animationRecorder = GetComponent<AnimationRecorder>();
+        viewportManager = GetComponent<ViewportManager>();
         checkpointManager = GetComponent<CheckpointManager>();
         animationManager = GetComponent<AnimationManager>();
-        DeactivateScripts(); // Make sure all function scripts are disabled by default
+        teleportationController = GetComponent<TeleportationController>();
+        //DeactivateScripts(); // Make sure all function scripts are disabled by default
 
         radialMenuCanvas.gameObject.SetActive(false); // Disable UI for mode selection on startup
 
@@ -51,7 +56,7 @@ public class ModeManager : MonoBehaviour
             radialMenuSprites.Add(image);
         }
 
-        selectedSprite = radialMenuSprites[radialMenuSprites.Count-1]; // Initially set selected sprite to the center
+        middleSprite = radialMenuSprites[radialMenuSprites.Count - 1];
     }
 
     // Update is called once per frame
@@ -88,11 +93,13 @@ public class ModeManager : MonoBehaviour
             ToggleVisibility();
             return true;
         }
+        
         else if (!isPressed && wasActivated)
         {
             wasActivated = false;
             return false;
         }
+
         else
         {
             return false;
@@ -103,18 +110,25 @@ public class ModeManager : MonoBehaviour
     // See CheckIfActive()
     {
         InputHelpers.IsPressed(device, selectionButton, out bool isSelected);
-        
-        if (isSelected && !wasSelected)
+
+        if (radialMenuCanvas.gameObject.activeSelf)
         {
-            wasSelected = true;
-            ActivateScript(interactionMode);
-            return true;
+            if (isSelected && !wasSelected)
+            {
+                wasSelected = true;
+                ActivateScript(interactionMode);
+                ShowCurrentModeSprite();
+                ToggleVisibility();
+                return true;
+            }
+
+            else
+            {
+                wasSelected = false;
+                return false;
+            }
         }
-        else if (!isSelected && wasSelected)
-        {
-            wasSelected = false;
-            return false;
-        }
+
         else
         {
             return false;
@@ -124,8 +138,16 @@ public class ModeManager : MonoBehaviour
     void ToggleVisibility()
     // Toggle the visibility of the radial menu UI element
     {
-        bool status = radialMenuCanvas.gameObject.activeSelf;
-        radialMenuCanvas.gameObject.SetActive(!status);
+        radialMenuCanvas.gameObject.SetActive(!radialMenuCanvas.gameObject.activeSelf);
+
+        if (radialMenuCanvas.gameObject.activeSelf)
+        {
+            gameObject.GetComponent<DeviceBasedSnapTurnProvider>().enabled = false;
+        }
+        else
+        {
+            gameObject.GetComponent<DeviceBasedSnapTurnProvider>().enabled = true;
+        }
     }
 
     void InputSeperation(Vector2 inputVector)
@@ -137,7 +159,7 @@ public class ModeManager : MonoBehaviour
             inputVector.x > lowerLimit &&   // Detext left limit
             inputVector.x < upperLimit &&   // Detect right limit
             inputVector.y > activationThreshold // Detect minimum value
-        ) 
+        )
         {
             //Debug.Log("Up");
             ResetSpriteColor(); // Reset sprite color to the default before updating
@@ -181,7 +203,7 @@ public class ModeManager : MonoBehaviour
             //Debug.Log("Right");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[3];
-            interactionMode = InteractionMode.exporting;
+            interactionMode = InteractionMode.explore;
         }
 
         else
@@ -207,43 +229,50 @@ public class ModeManager : MonoBehaviour
         }
     }
 
+    void ShowCurrentModeSprite()
+    {
+        middleSprite.sprite = selectedSprite.sprite;
+    }
+
     void ActivateScript(InteractionMode mode)
     // Activates a script depending on the current value of the interactionMode variable
-    // Calls the corresponding scripts EnableScript() function
     {
         DeactivateScripts();
         if (mode == InteractionMode.none)
         {
-            Debug.Log("Default mode selected");
+            Debug.Log("No mode selected");
         }
 
         if (mode == InteractionMode.recording)
         {
             animationRecorder.EnableScript();
-            Debug.Log("Recording");
+            viewportManager.EnableScript();
+            Debug.Log("Recording mode");
         }
 
         if (mode == InteractionMode.planning)
         {
             checkpointManager.EnableScript();
-            Debug.Log("Planning");
+            Debug.Log("Planning mode");
         }
 
-        if (mode == InteractionMode.exporting)
+        if (mode == InteractionMode.explore)
         {
-            Debug.Log("TODO: Export functionality");
+            teleportationController.EnableScript();
+            Debug.Log("Exploration mode");
         }
 
         if (mode == InteractionMode.visualizing)
         {
             animationManager.EnableScript();
-            Debug.Log("Visualizing");
+            Debug.Log("Visualization mode");
         }
     }
 
     void DeactivateScripts()
     {
         animationRecorder.DisableScript();
+        viewportManager.DisableScript();
         checkpointManager.DisableScript();
         animationManager.DisableScript();
     }

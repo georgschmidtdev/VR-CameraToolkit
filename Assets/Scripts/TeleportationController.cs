@@ -10,20 +10,24 @@ public class TeleportationController : MonoBehaviour
     public InputHelpers.Button activationButton;
     
     private float activationThreshold = 0.5f;
+    private bool scriptIsEnabled = false;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        DisableScript();
     }
 
     // Update is called once per frame
     void Update()
     // Enable Ray if check comes back as true
     {
-        if (teleportRay)
+        if (scriptIsEnabled)
         {
-            teleportRay.gameObject.SetActive(CheckIfActive(teleportRay));
+            if (teleportRay)
+            {
+                teleportRay.gameObject.SetActive(CheckIfActive(teleportRay));
+            }
         }
     }
 
@@ -32,5 +36,16 @@ public class TeleportationController : MonoBehaviour
     {
         InputHelpers.IsPressed(controller.inputDevice, activationButton, out bool result, activationThreshold);
         return result;
+    }
+
+    public void DisableScript()
+    {
+        scriptIsEnabled = false;
+        teleportRay.gameObject.SetActive(false);
+    }
+
+    public void EnableScript()
+    {
+        scriptIsEnabled = true;
     }
 }
