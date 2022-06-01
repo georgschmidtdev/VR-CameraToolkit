@@ -5,15 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - Rig
+  - VirtualViewport
+  - Visualizer
+  - PreviewCamera
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Rig
   - Water
   - UI
-  - Grab
-  - Rig
+  - Visualization
   - 
   - 
   - 
@@ -37,7 +39,8 @@ TagManager:
   - 
   - 
   - 
-  - Spatial Awareness
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0

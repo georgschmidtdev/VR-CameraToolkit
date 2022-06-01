@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.MixedReality.Input;
+//using Microsoft.MixedReality.Input;
 using UnityEngine;
 using UnityEngine.XR;
 using Unity.XR.CoreUtils;
@@ -26,6 +26,7 @@ public class CheckpointManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DisableScript();
         instancedCheckpoints = new List<GameObject>();
     }
 
@@ -33,6 +34,7 @@ public class CheckpointManager : MonoBehaviour
     void Update()
     {
         InputDevice device = InputDevices.GetDeviceAtXRNode(inputSource);
+
         
         if (scriptIsEnabled)
         {
@@ -44,7 +46,6 @@ public class CheckpointManager : MonoBehaviour
             }
         }
     }
-
     bool CheckIfActive(InputDevice device)
     {
         InputHelpers.IsPressed(device, activationButton, out bool isPressed);
@@ -83,10 +84,12 @@ public class CheckpointManager : MonoBehaviour
     public void DisableScript()
     {
         scriptIsEnabled = false;
+        checkpointRay.gameObject.SetActive(false);
     }
 
     public void EnableScript()
     {
         scriptIsEnabled = true;
+        checkpointRay.gameObject.SetActive(true);
     }
 }

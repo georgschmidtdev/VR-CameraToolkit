@@ -10,136 +10,83 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class AnimationRecorder : MonoBehaviour
 // Uses the Unity GameObjectRecorder to capture different properties of a given gameObject
 {
-    GameObjectRecorder recorder;
-    public GameObject activeObject;
+    public GameObject viewport;
     public XRNode inputDevice;
-    public InputHelpers.Button startRecordingInput;
-    public InputHelpers.Button stopRecordingInput;
-    public InputHelpers.Button deleteRecordingInput;
+    public InputHelpers.Button toggleRecordingInput;
     public string customPrefix = "";
     public string customName = "";
     public enum NamingConvention {Random, Prefix, Custom};
     public NamingConvention namingConvention;
+    public float framerate = 24;
 
+    private bool scriptIsEnabled = false;
+    private bool wasActivated = false;
+    private GameObjectRecorder recorder;
     private string sessionDirectory;
     private string sessionId;
     private string clipName;
-    private float framerate = 24f;
-    private string startRecordingKey = "i";
-    private string stopRecordingKey = "o";
-    private string deleteRecordingKey = "p";
-    private bool scriptIsEnabled = false;
-    private bool overwriteExistingFiles = false;
     private AnimationClip clip;
-    private AnimationClip currentClip;
-    private bool canRecord = true;
+    private bool recording = false;
     private int index;
     private List<AnimationClip> sessionClips;
+    private ViewportManager viewportManager;
 
     void Start()
     {
-        recorder = new GameObjectRecorder(activeObject);
-        recorder.BindComponentsOfType<Transform>(activeObject, false);
-        recorder.BindComponentsOfType<Camera>(activeObject, false);
+        DisableScript();
+        viewportManager = GetComponent<ViewportManager>();
     }
 
     void Update()
     {
         if (scriptIsEnabled)
         {
-            if (Input.GetKeyDown(startRecordingKey))
-            {
-                StartRecording();
-                Debug.Log("Recording started");
-            }
-
-            if (Input.GetKeyDown(stopRecordingKey))
-            {
-                StopRecording();
-                Debug.Log("Recording stopped");
-            }
-
-            if (Input.GetKeyDown(deleteRecordingKey))
-            {
-                DeleteRecording();
-                Debug.Log("Recording deleted");
-            }
+            CheckIfActive();
         }
     }
 
-    private void StartRecording()
+    void StartRecording()
     {
-        sessionDirectory = SessionManager.GetSessionDirectory();
-        canRecord = true;
         CreateNewClip();
+        recorder = new GameObjectRecorder(viewport);
+        recorder.BindComponentsOfType<Transform>(viewport, false);
+        recorder.BindComponentsOfType<Camera>(viewport, false);
+        recorder.BindComponentsOfType<AspectRatioManager>(viewport, false);
+
+        sessionDirectory = SessionManager.GetSessionDirectory();
+
+        viewportManager.StartRecordingIndicator();
+        recording = true;
+        Debug.Log("Recording started");
     }
 
-    private void StopRecording()
+    void StopRecording()
     {
-        canRecord = false;
-        recorder.SaveToClip(currentClip);
-        string fullPath = sessionDirectory + clipName + ".anim";
-        AssetDatabase.CreateAsset(currentClip, fullPath);
+        recorder.SaveToClip(clip, framerate);
+        string fullPath = "Assets/" + Path.GetRelativePath(Application.dataPath, sessionDirectory) + clipName + ".anim";
+        AssetDatabase.CreateAsset(clip, fullPath);
+        AssetDatabase.SaveAssets();
 
-        if (overwriteExistingFiles)
-        {
-            if (File.Exists(fullPath))
-            {
-                File.Delete(fullPath);
-            }
-
-            AssetDatabase.SaveAssets();
-        }
-
-        else
-        {
-            if (File.Exists(fullPath) && namingConvention == NamingConvention.Custom)
-            {
-                Debug.Log("File already exists, please use another name or change the naming convention");
-            }
-
-            else
-            {
-                AssetDatabase.SaveAssets();
-            }
-        }
+        viewportManager.StopRecordingIndicator();
+        recording = false;
+        Debug.Log("Recording stopped");
     }
 
-    private void DeleteRecording()
+    void LateUpdate()
     {
-        if (canRecord)
-        // Dont delete during recording
-        {
-            return;
-        }
-
-        if (true)
-        // File does not exist
-        {
-            return;
-        }
-        // ToDo:
-        // Rework saving functionality to avoid using UnityEditor namespace
-    }
-
-    private void LateUpdate()
-    {
-        if (clip == null)
-        {
-            return;
-        }
-
-        if (canRecord)
+        if (recording)
         {
             recorder.TakeSnapshot(Time.deltaTime);
         }
     }
 
-    private void CreateNewClip()
+    void CreateNewClip()
     {
         clip = new AnimationClip();
+        clipName = SessionManager.CreateRandomId();
+        clip.legacy = false;
 
-        if (namingConvention == NamingConvention.Random)
+        /**if (namingConvention == NamingConvention.Random)
         {
             clipName = SessionManager.CreateRandomId();
         }
@@ -168,19 +115,54 @@ public class AnimationRecorder : MonoBehaviour
             {
                 Debug.Log("Custom name empty");
             }
-        }
+        }**/
+    }
+
+    public void SetFramerate(float fps)
+    {
+        framerate = fps;
+    }
+
+        void CheckIfActive()
+    // Unitys integrated GetKeyDown() function is not available for XR-Controller based inputs
+    // This function emulates the same behaviour for a given (InputDevice device) and button (activationButton)
+    {
+        InputDevice device = InputDevices.GetDeviceAtXRNode(inputDevice);
+
+        InputHelpers.IsPressed(device, toggleRecordingInput, out bool isPressed);
         
-        clip.frameRate = framerate;
-        currentClip = clip;
+        if (isPressed && !recording && !wasActivated)
+        {
+            wasActivated = true;
+            StartRecording();
+        }
+
+        if (!isPressed && wasActivated)
+        {
+            wasActivated = false;
+        }
+
+        if (isPressed && recording && !wasActivated)
+        {
+            StopRecording();
+        }
     }
 
     public void DisableScript()
     {
+        if (recording)
+        {
+            StopRecording();
+        }
+
         scriptIsEnabled = false;
+        viewport.gameObject.SetActive(false);
     }
 
     public void EnableScript()
     {
         scriptIsEnabled = true;
+        viewport.gameObject.SetActive(true);
+        viewportManager.ResetViewportPosition();
     }
 }
