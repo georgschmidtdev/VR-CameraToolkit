@@ -72,7 +72,7 @@ public class AnimationManager : MonoBehaviour
         }
     }
 
-    void BuildAnimations()
+    public void BuildAnimations()
     {
         ResetAnimationIndex(); // Clear already indexed files to prevent duplicates
         IndexAnimations();
@@ -406,7 +406,7 @@ public class AnimationManager : MonoBehaviour
         }
     }
 
-    void UpdatePreviewAnimation(string name)
+    public void UpdatePreviewAnimation(string name)
     // Set camera preview to active animation
     {
         float width = 0.5f;

@@ -45,7 +45,7 @@ public class AnimationRecorder : MonoBehaviour
         }
     }
 
-    void StartRecording()
+    public void StartRecording()
     {
         CreateNewClip();
         recorder = new GameObjectRecorder(viewport);
@@ -60,7 +60,7 @@ public class AnimationRecorder : MonoBehaviour
         Debug.Log("Recording started");
     }
 
-    void StopRecording()
+    public void StopRecording()
     {
         recorder.SaveToClip(clip, framerate);
         string fullPath = "Assets/" + Path.GetRelativePath(Application.dataPath, sessionDirectory) + clipName + ".anim";
