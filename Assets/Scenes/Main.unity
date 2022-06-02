@@ -1446,7 +1446,7 @@ GameObject:
   - component: {fileID: 182371932}
   m_Layer: 0
   m_Name: ExtractorContainer
-  m_TagString: Untagged
+  m_TagString: ExtractorContainer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1477,7 +1477,7 @@ GameObject:
   - component: {fileID: 189896497}
   m_Layer: 0
   m_Name: LineContainer
-  m_TagString: Untagged
+  m_TagString: LineContainer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2873,7 +2873,7 @@ MonoBehaviour:
   - {fileID: 1911327106}
   defaultColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   highlightedColor: {r: 1, g: 0, b: 0, a: 1}
-  interactionMode: 0
+  interactionMode: 4
 --- !u!114 &477678756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2915,7 +2915,7 @@ MonoBehaviour:
   customPrefix: 
   customName: 
   namingConvention: 0
-  framerate: 24
+  framerate: 25
 --- !u!114 &477678758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3458,9 +3458,9 @@ Camera:
   m_projectionMatrixMode: 2
   m_GateFitMode: 2
   m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
+  m_SensorSize: {x: 10, y: 10}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 37.94365
+  m_FocalLength: 44.5
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -3469,7 +3469,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 35.1
+  field of view: 12.821681
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -3499,7 +3499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e3a4ed30c9aae340be54536e6dc91ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aspectRatio: 0
+  aspectRatio: 1.3333334
 --- !u!1 &541108409
 GameObject:
   m_ObjectHideFlags: 0
@@ -5740,7 +5740,7 @@ GameObject:
   - component: {fileID: 986511261}
   m_Layer: 0
   m_Name: PreviewContainer
-  m_TagString: Untagged
+  m_TagString: PreviewContainer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

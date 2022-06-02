@@ -8,6 +8,10 @@ TagManager:
   - VirtualViewport
   - Visualizer
   - PreviewCamera
+  - LineContainer
+  - ExtractorContainer
+  - PreviewContainer
+  - CheckpointContainer
   layers:
   - Default
   - TransparentFX
