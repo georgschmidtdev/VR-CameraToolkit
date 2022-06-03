@@ -2916,6 +2916,7 @@ MonoBehaviour:
   customName: 
   namingConvention: 0
   framerate: 25
+  activeObject: {fileID: 309841869}
 --- !u!114 &477678758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5124,12 +5125,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rig: {fileID: 477678746}
+  leftHand: {fileID: 309841869}
+  rightHand: {fileID: 1239072768}
   virtualViewport: {fileID: 514779302}
   lineContainer: {fileID: 189896496}
   extractorContainer: {fileID: 182371931}
   previewContainer: {fileID: 986511260}
   previewCameraRenderTexture: {fileID: 8400000, guid: 4d306dcd6cd11d24dbfbae70eb248cfb,
     type: 2}
+  activeObjectOverrides:
+  - {fileID: 309841869}
+  - {fileID: 1239072768}
 --- !u!4 &819774472
 Transform:
   m_ObjectHideFlags: 0
@@ -5138,7 +5144,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 819774470}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.2498987, y: -0.2933809, z: -0.21983734}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

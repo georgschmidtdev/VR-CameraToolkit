@@ -234,7 +234,7 @@ public class ModeManager : MonoBehaviour
         middleSprite.sprite = selectedSprite.sprite;
     }
 
-    void ActivateScript(InteractionMode mode)
+    public void ActivateScript(InteractionMode mode)
     // Activates a script depending on the current value of the interactionMode variable
     {
         DeactivateScripts();

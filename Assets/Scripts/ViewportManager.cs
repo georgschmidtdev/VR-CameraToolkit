@@ -75,37 +75,8 @@ public class ViewportManager : MonoBehaviour
         if (scriptIsEnabled)
         {
             CheckIfActive();
-            //CalculateFocalLength();
-            UpdateCameraSettings();
+            //UpdateCameraSettings();
         }
-    }
-
-    void CalculateFocalLength()
-    {
-        /*
-        InputDevice rightDevice = InputDevices.GetDeviceAtXRNode(rightInputDevice);
-        float activationThreshhold = 0.5f;
-        Vector2 normalizedInput;
-        Vector2 initialVector;
-        rightDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out inputAxis);
-        normalizedInput = inputAxis.normalized;
-        
-        if (inputAxis.magnitude > activationThreshhold && !changingFocalLength)
-        {
-            changingFocalLength = true;
-            initialVector = inputAxis;
-        }
-
-        else if (inputAxis.magnitude < activationThreshhold && changingFocalLength)
-        {
-            changingFocalLength = false;
-        }
-
-        else if (inputAxis.magnitude > activationThreshhold && changingFocalLength)
-        {
-
-        }
-        */
     }
 
     void CheckIfActive()
