@@ -12,6 +12,7 @@ TagManager:
   - ExtractorContainer
   - PreviewContainer
   - CheckpointContainer
+  - Index
   layers:
   - Default
   - TransparentFX
