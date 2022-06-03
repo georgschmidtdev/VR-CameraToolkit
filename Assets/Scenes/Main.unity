@@ -2909,6 +2909,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a443709b231c3943b03b4a4e4355e31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overrideActiveObject: 0
+  activeObject: {fileID: 0}
   viewport: {fileID: 514779302}
   inputDevice: 5
   toggleRecordingInput: 1
@@ -2916,7 +2918,6 @@ MonoBehaviour:
   customName: 
   namingConvention: 0
   framerate: 25
-  activeObject: {fileID: 309841869}
 --- !u!114 &477678758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5136,6 +5137,7 @@ MonoBehaviour:
   activeObjectOverrides:
   - {fileID: 309841869}
   - {fileID: 1239072768}
+  - {fileID: 614556242}
 --- !u!4 &819774472
 Transform:
   m_ObjectHideFlags: 0
