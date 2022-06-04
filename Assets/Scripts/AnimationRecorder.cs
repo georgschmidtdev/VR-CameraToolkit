@@ -32,11 +32,19 @@ public class AnimationRecorder : MonoBehaviour
     private int index;
     private List<AnimationClip> sessionClips;
     private ViewportManager viewportManager;
+    private CurveFilterOptions filterOptions;
 
     void Start()
     {
         DisableScript();
         viewportManager = GetComponent<ViewportManager>();
+        filterOptions = new CurveFilterOptions();
+        filterOptions.floatError = 100;
+        filterOptions.keyframeReduction = false;
+        filterOptions.positionError = 100;
+        filterOptions.rotationError = 180;
+        filterOptions.scaleError = 100;
+        filterOptions.unrollRotation = true;
     }
 
     void Update()
@@ -75,7 +83,7 @@ public class AnimationRecorder : MonoBehaviour
     public void StopRecording()
     {
         Debug.Log(framerate);
-        recorder.SaveToClip(clip, framerate);
+        recorder.SaveToClip(clip, framerate,filterOptions);
         string fullPath = "Assets/" + Path.GetRelativePath(Application.dataPath, sessionDirectory) + clipName + ".anim";
         AssetDatabase.CreateAsset(clip, fullPath);
         AssetDatabase.SaveAssets();
