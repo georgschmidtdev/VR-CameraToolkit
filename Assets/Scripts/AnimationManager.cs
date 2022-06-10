@@ -357,13 +357,16 @@ public class AnimationManager : MonoBehaviour
 
     void DeleteDictionaryEntry(string name)
     {
+        AnimationClip clipToDelete = new AnimationClip();
         foreach (var item in clipDictionary)
         {
             if (item.Key.name == name)
             {
-                clipDictionary.Remove(item.Key);
+                clipToDelete = item.Key;
             }
         }
+
+        clipDictionary.Remove(clipToDelete);
     }
 
     void DeleteAnimationVisualizer(string name)

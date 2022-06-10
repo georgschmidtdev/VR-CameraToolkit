@@ -28,10 +28,19 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
         // Check if object is currently being interacted with by two interactors
         if (secondaryInteractor != null && firstInteractorSelecting != null)
         {
+            this.trackPosition = false;
+            this.trackRotation = false;
+
             // Change object rotation based on the interactors (controllers) rotation
             //firstInteractorSelecting.transform.rotation = CalculateRotation() * Quaternion.Euler(0f, 90f, 0f);
             gameObject.transform.rotation = CalculateRotation()* Quaternion.Euler(90f, 90f, 0f);
             gameObject.transform.position = CalculatePosition();
+        }
+
+        else
+        {
+            this.trackPosition = true;
+            this.trackRotation = true;
         }
 
         base.ProcessInteractable(updatePhase);
