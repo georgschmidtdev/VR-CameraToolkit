@@ -20,7 +20,7 @@ public class ModeManager : MonoBehaviour
     public List<GameObject> radialMenuItems;
     public Color defaultColor = Color.white;
     public Color highlightedColor = Color.blue;
-    public enum InteractionMode{none, recording, planning, visualizing, explore};
+    public enum InteractionMode{none, recording, visualizing, explore};
     public InteractionMode interactionMode;
 
     private InputDevice device;
@@ -174,10 +174,10 @@ public class ModeManager : MonoBehaviour
             inputVector.y < -activationThreshold
         )
         {
-            //Debug.Log("Down");
+            /**Debug.Log("Down");
             ResetSpriteColor();
             selectedSprite = radialMenuSprites[1];
-            interactionMode = InteractionMode.planning;
+            interactionMode = InteractionMode.planning;**/
         }
 
         else if
@@ -248,12 +248,6 @@ public class ModeManager : MonoBehaviour
             animationRecorder.EnableScript();
             viewportManager.EnableScript();
             Debug.Log("Recording mode");
-        }
-
-        if (mode == InteractionMode.planning)
-        {
-            checkpointManager.EnableScript();
-            Debug.Log("Planning mode");
         }
 
         if (mode == InteractionMode.explore)
