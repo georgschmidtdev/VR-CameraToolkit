@@ -10,6 +10,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class AnimationRecorder : MonoBehaviour
 // Uses the Unity GameObjectRecorder to capture different properties of a given gameObject
 {
+    public bool overrideActiveObject = false;
+    public GameObject activeObject;
     public GameObject viewport;
     public XRNode inputDevice;
     public InputHelpers.Button toggleRecordingInput;
@@ -30,11 +32,19 @@ public class AnimationRecorder : MonoBehaviour
     private int index;
     private List<AnimationClip> sessionClips;
     private ViewportManager viewportManager;
+    private CurveFilterOptions filterOptions;
 
     void Start()
     {
         DisableScript();
         viewportManager = GetComponent<ViewportManager>();
+        filterOptions = new CurveFilterOptions();
+        filterOptions.floatError = 100;
+        filterOptions.keyframeReduction = false;
+        filterOptions.positionError = 100;
+        filterOptions.rotationError = 180;
+        filterOptions.scaleError = 100;
+        filterOptions.unrollRotation = true;
     }
 
     void Update()
@@ -45,13 +55,23 @@ public class AnimationRecorder : MonoBehaviour
         }
     }
 
-    void StartRecording()
+    public void StartRecording()
     {
         CreateNewClip();
-        recorder = new GameObjectRecorder(viewport);
-        recorder.BindComponentsOfType<Transform>(viewport, false);
-        recorder.BindComponentsOfType<Camera>(viewport, false);
-        recorder.BindComponentsOfType<AspectRatioManager>(viewport, false);
+
+        if (!overrideActiveObject)
+        {
+            activeObject = viewport;
+            recorder = new GameObjectRecorder(activeObject);
+            recorder.BindComponentsOfType<Transform>(activeObject, false);
+            recorder.BindComponentsOfType<Camera>(activeObject, false);
+            recorder.BindComponentsOfType<AspectRatioManager>(activeObject, false);
+        }
+        else
+        {
+            recorder = new GameObjectRecorder(activeObject);
+            recorder.BindComponentsOfType<Transform>(activeObject, false);
+        }
 
         sessionDirectory = SessionManager.GetSessionDirectory();
 
@@ -60,9 +80,10 @@ public class AnimationRecorder : MonoBehaviour
         Debug.Log("Recording started");
     }
 
-    void StopRecording()
+    public void StopRecording()
     {
-        recorder.SaveToClip(clip, framerate);
+        Debug.Log(framerate);
+        recorder.SaveToClip(clip, framerate,filterOptions);
         string fullPath = "Assets/" + Path.GetRelativePath(Application.dataPath, sessionDirectory) + clipName + ".anim";
         AssetDatabase.CreateAsset(clip, fullPath);
         AssetDatabase.SaveAssets();

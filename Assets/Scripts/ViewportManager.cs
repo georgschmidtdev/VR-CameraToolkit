@@ -22,7 +22,6 @@ public class ViewportManager : MonoBehaviour
     public RectTransform indicators;
     public Image recordingIndicator;
     public TMP_Dropdown framerateDropdown;
-    public TMP_Dropdown sensorSizeDropdown;
     public TMP_Dropdown aspectRatioDropdown;
     public TMP_Dropdown focalLengthDropdown;
 
@@ -34,13 +33,7 @@ public class ViewportManager : MonoBehaviour
     private static Color defaultColor = Color.white;
     private static Color recordingColor = Color.red;
     private float[] framerates = new float[]{24f, 25f, 30f, 50f, 60f, 120f};
-    private Dictionary<string, Vector2> sensorDictionary;
-    private Vector2 super8 = new Vector2(5.79f, 4.01f);
-    private Vector2 super16 = new Vector2(12.52f, 7.41f);
-    private Vector2 academy35 = new Vector2(21.0f, 15.2f);
-    private Vector2 super35 = new Vector2(24.89f, 18.66f);
-    private Vector2 alexa65 = new Vector2(54.12f, 25.59f);
-    private Vector2 imax70 = new Vector2(70.41f, 52.63f);
+
     private List<Vector2> aspectRatios;
     private Vector2 standardRatio = new Vector2(4.0f, 3.0f);
     private Vector2 squareRatio = new Vector2(1.0f, 1.0f);
@@ -75,37 +68,8 @@ public class ViewportManager : MonoBehaviour
         if (scriptIsEnabled)
         {
             CheckIfActive();
-            //CalculateFocalLength();
-            UpdateCameraSettings();
+            //UpdateCameraSettings();
         }
-    }
-
-    void CalculateFocalLength()
-    {
-        /*
-        InputDevice rightDevice = InputDevices.GetDeviceAtXRNode(rightInputDevice);
-        float activationThreshhold = 0.5f;
-        Vector2 normalizedInput;
-        Vector2 initialVector;
-        rightDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out inputAxis);
-        normalizedInput = inputAxis.normalized;
-        
-        if (inputAxis.magnitude > activationThreshhold && !changingFocalLength)
-        {
-            changingFocalLength = true;
-            initialVector = inputAxis;
-        }
-
-        else if (inputAxis.magnitude < activationThreshhold && changingFocalLength)
-        {
-            changingFocalLength = false;
-        }
-
-        else if (inputAxis.magnitude > activationThreshhold && changingFocalLength)
-        {
-
-        }
-        */
     }
 
     void CheckIfActive()
@@ -129,16 +93,8 @@ public class ViewportManager : MonoBehaviour
 
     void VariableSetup()
     {
-        sensorDictionary = new Dictionary<string, Vector2>();
         aspectRatios = new List<Vector2>();
         focalLengths = new List<float>();
-
-        sensorDictionary.Add("Super8", super8);
-        sensorDictionary.Add("Super16", super16);
-        sensorDictionary.Add("Academy35", academy35);
-        sensorDictionary.Add("Super35", super35);
-        sensorDictionary.Add("Alexa65", alexa65);
-        sensorDictionary.Add("IMAX70", imax70);
         
         aspectRatios.Add(standardRatio);
         aspectRatios.Add(squareRatio);
@@ -164,13 +120,6 @@ public class ViewportManager : MonoBehaviour
             TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
             newOption.text = item.ToString();
             framerateDropdown.options.Add(newOption);
-        }
-
-        foreach (var item in sensorDictionary)
-        {
-            TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
-            newOption.text = item.Key;
-            sensorSizeDropdown.options.Add(newOption);
         }
 
         foreach (var item in aspectRatios)
@@ -209,7 +158,6 @@ public class ViewportManager : MonoBehaviour
         indicators.sizeDelta = newIndicatorSize;
 
         viewportCamera.aspect = currentAspectRatio;
-        viewportCamera.sensorSize = sensorDictionary.GetValueOrDefault(sensorSizeDropdown.options[sensorSizeDropdown.value].text);
         aspectRatioManager.UpdateAspectRatio(new Vector2(aspectRatios[aspectRatioDropdown.value].x, aspectRatios[aspectRatioDropdown.value].y));
         viewportCamera.focalLength = focalLengths[focalLengthDropdown.value];
     }
