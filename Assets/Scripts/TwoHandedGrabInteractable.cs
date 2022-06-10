@@ -6,8 +6,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class TwoHandedGrabInteractable : XRGrabInteractable
 {
     public XRSimpleInteractable secondaryAttachmentPoint;
-    public enum RotationMethod {None, Left, Right, Interpolated};
-    public RotationMethod rotationMethod;
 
     private IXRSelectInteractor secondaryInteractor;
     private Quaternion initialRotation;
@@ -31,8 +29,9 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
         if (secondaryInteractor != null && firstInteractorSelecting != null)
         {
             // Change object rotation based on the interactors (controllers) rotation
-            //ToDo: 
-            firstInteractorSelecting.transform.rotation = CalculateRotation() * Quaternion.Euler(0f, 90f, 0f);
+            //firstInteractorSelecting.transform.rotation = CalculateRotation() * Quaternion.Euler(0f, 90f, 0f);
+            gameObject.transform.rotation = CalculateRotation()* Quaternion.Euler(90f, 90f, 0f);
+            gameObject.transform.position = CalculatePosition();
         }
 
         base.ProcessInteractable(updatePhase);
@@ -41,7 +40,7 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
     protected override void OnSelectEntered(SelectEnterEventArgs interactor)
     {   
         // Store initial rotation before manipulation
-        initialRotation = interactor.interactorObject.transform.rotation;
+        initialRotation = interactor.interactorObject.transform.localRotation;
 
         base.OnSelectEntered(interactor);
     }
@@ -59,36 +58,29 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
     // Calculate rotation based on chosen method
     {
         Quaternion targetRotation;
-        Vector3 primaryPosition = firstInteractorSelecting.transform.localPosition;
+        Vector3 primaryPosition = firstInteractorSelecting.transform.position;
         Vector3 primaryUp = firstInteractorSelecting.transform.up;
-        Vector3 secondaryPosition = secondaryInteractor.transform.localPosition;
+        Vector3 secondaryPosition = secondaryInteractor.transform.position;
         Vector3 secondaryUp = secondaryInteractor.transform.up;
 
-        if (rotationMethod == RotationMethod.None)
-        // No up-vector is used
-        {
-            targetRotation = Quaternion.LookRotation(secondaryPosition - primaryPosition);
-        }
-        else if (rotationMethod == RotationMethod.Right)
-        // Up-vector based on right controller
-        {
-            targetRotation = Quaternion.LookRotation(secondaryPosition - primaryPosition, primaryUp);
-        }
-        else if (rotationMethod == RotationMethod.Left)
-        // Up-vector based on left controller
-        {
-            targetRotation = Quaternion.LookRotation(secondaryPosition - primaryPosition, secondaryUp);
-        }
-        else
         // Up-vector based on the average of both controllers
-        {
-            // Interpolate between both up-vectors
-            Vector3 averageUpVector = Vector3.Lerp(primaryUp, secondaryUp, 0.5f);
-            targetRotation = Quaternion.LookRotation(secondaryPosition - primaryPosition, averageUpVector);
-        }
+        
+        // Interpolate between both up-vectors
+        Vector3 averageUpVector = Vector3.Lerp(primaryUp, secondaryUp, 0.5f);
+        targetRotation = Quaternion.LookRotation(secondaryPosition - primaryPosition, averageUpVector);
 
         return targetRotation;
+    }
 
+    private Vector3 CalculatePosition()
+    {
+        Vector3 targetPosition;
+        Vector3 primaryPosition = firstInteractorSelecting.transform.position;
+        Vector3 secondaryPosition = secondaryInteractor.transform.position;
+
+        targetPosition = Vector3.Lerp(primaryPosition, secondaryPosition, 0.5f);
+
+        return targetPosition;
     }
 
     public void SecondaryGrab(SelectEnterEventArgs interactor)

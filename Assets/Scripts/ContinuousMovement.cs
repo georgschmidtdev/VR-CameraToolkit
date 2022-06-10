@@ -8,22 +8,21 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class ContinuousMovement : MonoBehaviour
 {
 
-    public float movementSpeedMultiplier = 1.0f;
+    public float movementSpeedMultiplier = 3.0f;
     public float gravity = -9.81f;
     public float inputThreshold = 0.2f;
     public LayerMask collisionLayerMask;
     public XRNode inputSource;
+    public CharacterController character;
+    public XROrigin rig;
 
     private float fallingSpeed;
     private Vector2 inputAxis;
-    private CharacterController character;
-    private XROrigin rig;
 
     // Start is called before the first frame update
     void Start()
     {
-        character = GetComponent<CharacterController>();
-        rig = GetComponent<XROrigin>();
+
     }
 
     // Update is called once per frame

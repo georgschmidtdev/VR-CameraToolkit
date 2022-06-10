@@ -15,11 +15,8 @@ public class AnimationRecorder : MonoBehaviour
     public GameObject viewport;
     public XRNode inputDevice;
     public InputHelpers.Button toggleRecordingInput;
-    public string customPrefix = "";
-    public string customName = "";
-    public enum NamingConvention {Random, Prefix, Custom};
-    public NamingConvention namingConvention;
     public float framerate = 24;
+    public ViewportManager viewportManager;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
@@ -31,13 +28,11 @@ public class AnimationRecorder : MonoBehaviour
     private bool recording = false;
     private int index;
     private List<AnimationClip> sessionClips;
-    private ViewportManager viewportManager;
     private CurveFilterOptions filterOptions;
 
     void Start()
     {
         DisableScript();
-        viewportManager = GetComponent<ViewportManager>();
         filterOptions = new CurveFilterOptions();
         filterOptions.floatError = 100;
         filterOptions.keyframeReduction = false;
@@ -106,37 +101,6 @@ public class AnimationRecorder : MonoBehaviour
         clip = new AnimationClip();
         clipName = SessionManager.CreateRandomId();
         clip.legacy = false;
-
-        /**if (namingConvention == NamingConvention.Random)
-        {
-            clipName = SessionManager.CreateRandomId();
-        }
-
-        else if (namingConvention == NamingConvention.Prefix)
-        {
-            if (customPrefix != "")
-            {
-                clipName = customPrefix + SessionManager.CreateRandomId();
-            }
-
-            else
-            {
-                Debug.Log("Custom prefix empty");
-            }
-        }
-
-        else if (namingConvention == NamingConvention.Custom)
-        {
-            if (customName != "")
-            {
-                clipName = customName;
-            }
-
-            else
-            {
-                Debug.Log("Custom name empty");
-            }
-        }**/
     }
 
     public void SetFramerate(float fps)
