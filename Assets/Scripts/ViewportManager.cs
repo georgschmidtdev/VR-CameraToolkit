@@ -27,6 +27,7 @@ public class ViewportManager : MonoBehaviour
     public TMP_Dropdown focalLengthDropdown;
     public AnimationRecorder animationRecorder;
     public AspectRatioManager aspectRatioManager;
+    public GameObject defaultViewportPosition;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
@@ -177,8 +178,8 @@ public class ViewportManager : MonoBehaviour
 
     public void ResetViewportPosition()
     {
-        Vector3 targetPosition = vrCamera.transform.localPosition + new Vector3(0f, -0.2f, 0.5f);
-        virtualViewport.gameObject.transform.position = targetPosition;
+        virtualViewport.transform.position = defaultViewportPosition.transform.position;
+        virtualViewport.transform.rotation = defaultViewportPosition.transform.rotation;
     }
 
     void ToggleVisibility()
