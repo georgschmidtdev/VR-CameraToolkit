@@ -26,6 +26,7 @@ public class AnimationManager : MonoBehaviour
     public RenderTexture defaultRenderTexture;
     public float lineWidth = 0.025f;
     public TMP_Dropdown previewDropdown;
+    public LayerManager layerManager;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
@@ -147,7 +148,9 @@ public class AnimationManager : MonoBehaviour
             previewOverrideController["DefaultAnimation"] = item.Key;
 
             AspectRatioManager currentAspectRatioManager = currentPreview.GetComponent<AspectRatioManager>();
-            currentPreview.GetComponent<Camera>().aspect = currentAspectRatioManager.GetAspectRatio();
+            Camera currentPreviewCamera = currentPreview.GetComponent<Camera>();
+            currentPreviewCamera.aspect = currentAspectRatioManager.GetAspectRatio();
+            currentPreviewCamera.cullingMask = layerManager.GetLayerMask();
         }
     }
 

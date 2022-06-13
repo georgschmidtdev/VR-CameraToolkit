@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 262.38013, g: 325.09448, b: 430.2744, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2619,6 +2619,7 @@ GameObject:
   - component: {fileID: 477678759}
   - component: {fileID: 477678760}
   - component: {fileID: 477678761}
+  - component: {fileID: 477678762}
   m_Layer: 3
   m_Name: VR Rig
   m_TagString: Rig
@@ -2738,7 +2739,7 @@ MonoBehaviour:
   inputThreshold: 0.2
   collisionLayerMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 2147483647
   inputSource: 4
   character: {fileID: 477678752}
   rig: {fileID: 477678747}
@@ -2848,6 +2849,7 @@ MonoBehaviour:
     type: 2}
   lineWidth: 0.025
   previewDropdown: {fileID: 867473638}
+  layerManager: {fileID: 477678762}
 --- !u!114 &477678759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2908,6 +2910,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previewDropdown: {fileID: 867473638}
   animationManager: {fileID: 477678758}
+--- !u!114 &477678762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477678746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2b3932c5b1b6574fae0d72a05e495ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vrCamera: {fileID: 614556246}
+  viewportCamera: {fileID: 514779308}
+  continuousMovement: {fileID: 477678753}
 --- !u!1 &514779302
 GameObject:
   m_ObjectHideFlags: 0
@@ -3238,7 +3255,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 87
+    m_Bits: 2147483647
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: bbcd26adc5c635049a3eda04af210edc, type: 2}
   m_TargetDisplay: 0
@@ -4965,7 +4982,7 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 929518904}
   m_Template: {fileID: 1252659717}
-  m_CaptionText: {fileID: 800596518}
+  m_CaptionText: {fileID: 1950624307}
   m_CaptionImage: {fileID: 0}
   m_Placeholder: {fileID: 0}
   m_ItemText: {fileID: 800596518}
