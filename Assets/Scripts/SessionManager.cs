@@ -100,13 +100,16 @@ public class SessionManager : MonoBehaviour
 
     private void RemoveEmptySessionDirectories()
     {
-        foreach (var folder in Directory.GetDirectories(saveDirectory))
+        if (Directory.Exists(saveDirectory))
         {
-            if (Directory.GetFiles(folder).Length == 0)
+            foreach (var folder in Directory.GetDirectories(saveDirectory))
             {
-                string metaFile = folder.ToString() + ".meta";
-                File.Delete(metaFile);
-                Directory.Delete(folder);
+                if (Directory.GetFiles(folder).Length == 0)
+                {
+                    string metaFile = folder.ToString() + ".meta";
+                    File.Delete(metaFile);
+                    Directory.Delete(folder);
+                }
             }
         }
     }
