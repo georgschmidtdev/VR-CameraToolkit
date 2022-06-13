@@ -20,7 +20,6 @@ public class AnimationManager : MonoBehaviour
     public GameObject previewContainer;
     public GameObject playbackPanel;
     public GameObject animationBrowser;
-    public GameObject animationBrowserList;
     public GameObject listEntryPrefab;
     public GameObject cameraPreviewCanvas;
     public RenderTexture cameraPreviewCanvasRenderTexture;
@@ -341,7 +340,6 @@ public class AnimationManager : MonoBehaviour
         DeleteDictionaryEntry(name);
         DeleteAnimationVisualizer(name);
         DeleteAnimationPreview(name);
-        DeleteBrowserEntry(name);
         DeleteAnimationFile(name);
         UpdateAnimationBrowser();
     }
@@ -386,7 +384,7 @@ public class AnimationManager : MonoBehaviour
 
     void DeleteBrowserEntry(string name)
     {
-        Destroy(animationBrowserList.gameObject.transform.Find(name).gameObject);
+        previewDropdown.ClearOptions();
     }
 
     void DeleteAnimationFile(string name)

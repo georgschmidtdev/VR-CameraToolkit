@@ -133,6 +133,10 @@ public class ViewportManager : MonoBehaviour
             newOption.text = item.ToString();
             focalLengthDropdown.options.Add(newOption);
         }
+
+        framerateDropdown.RefreshShownValue();
+        aspectRatioDropdown.RefreshShownValue();
+        focalLengthDropdown.RefreshShownValue();
     }
 
     public void UpdateCameraSettings()
