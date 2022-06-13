@@ -5,17 +5,12 @@ using TMPro;
 
 public class BrowserEntryManager : MonoBehaviour
 {
-    public GameObject nameField;
-
-    private GameObject rig;
-    private TextMeshProUGUI animationName;
-    private AnimationManager animationManager;
+    public TMP_Dropdown previewDropdown;
+    public AnimationManager animationManager;
     // Start is called before the first frame update
     void Start()
     {
-        animationName = nameField.GetComponent<TextMeshProUGUI>();
-        rig = GameObject.FindWithTag("Rig");
-        animationManager = rig.GetComponent<AnimationManager>();
+        
     }
 
     // Update is called once per frame
@@ -26,11 +21,17 @@ public class BrowserEntryManager : MonoBehaviour
 
     public void ToggleVisibility()
     {
-        animationManager.ToggleVisibility(animationName.text);
+        if (previewDropdown.options.Count > 0)
+        {
+            animationManager.ToggleVisibility(previewDropdown.options[previewDropdown.value].text);
+        }
     }
 
     public void DeleteEntry()
     {
-        animationManager.DeleteAnimation(animationName.text);
+        if (previewDropdown.options.Count > 0)
+        {
+            animationManager.DeleteAnimation(previewDropdown.options[previewDropdown.value].text);
+        }
     }
 }

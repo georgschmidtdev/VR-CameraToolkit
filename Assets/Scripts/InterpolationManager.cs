@@ -30,7 +30,7 @@ public class InterpolationManager : MonoBehaviour
 
     float Interpolate(float firstValue, float secondValue)
     {
-        float newValue = (firstValue + secondValue) / 2;
+        float newValue = Mathf.Lerp(firstValue, secondValue, 0.5f);
         return newValue;
     }
 }

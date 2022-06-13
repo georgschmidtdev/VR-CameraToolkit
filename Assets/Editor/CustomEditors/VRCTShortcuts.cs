@@ -5,11 +5,14 @@ using UnityEditor;
 
 public class VRCTShortcuts : EditorWindow
 {
+    int mode = 0;
+    string[] modeOptions = new string[] {"Exploration", "Recording", "Visualization"};
     bool overrideActiveObject = false;
     int activeObject = 0;
     string[] overrideOptions;
+    int animation = 0;
+    string [] animationOptions;
     float frameRate;
-    Vector2 sensorSize = new Vector2(36.0f, 24.0f);
     Vector2 aspectRatio = new Vector2(16.0f, 9.0f);
     float focalLength;
     
@@ -21,7 +24,9 @@ public class VRCTShortcuts : EditorWindow
     private Camera viewportCamera;
     private AspectRatioManager aspectRatioManager;
     private AnimationRecorder animationRecorder;
+    private AnimationManager animationManager;
     private ModeManager modeManager;
+    private GameObject lineContainer;
 
     [MenuItem("Tools/VRCTShortcuts")]
 
@@ -38,7 +43,7 @@ public class VRCTShortcuts : EditorWindow
 
         if (!CheckPlayMode())
         {
-            EditorGUILayout.LabelField("ENTER PLAY MODE TO RECORD.");
+            EditorGUILayout.LabelField("ENTER PLAY MODE.");
         }
         else if (CheckPlayMode() && !recording)
         {
@@ -53,49 +58,81 @@ public class VRCTShortcuts : EditorWindow
 
         using (new EditorGUI.DisabledScope(!CheckPlayMode()))
         {
-            using (new EditorGUI.DisabledScope(recording))
+            EditorGUI.BeginChangeCheck();
+            mode = EditorGUILayout.Popup("Interaction Mode", mode, modeOptions);
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                overrideActiveObject = EditorGUILayout.Toggle("Override Active Object", overrideActiveObject);
-                using (new EditorGUI.DisabledScope(!overrideActiveObject))
+                SwitchMode();
+            }
+
+            using (new EditorGUI.DisabledScope(mode != 1))
+            {
+                using (new EditorGUI.DisabledScope(recording))
                 {
-                    activeObject = EditorGUILayout.Popup("Active Object", activeObject, overrideOptions);
-                }
-                if (EditorGUI.EndChangeCheck())
-                {
-                    UpdateObjectOverride();
+                    EditorGUI.BeginChangeCheck();
+                    overrideActiveObject = EditorGUILayout.Toggle("Override Active Object", overrideActiveObject);
+                    using (new EditorGUI.DisabledScope(!overrideActiveObject))
+                    {
+                        activeObject = EditorGUILayout.Popup("Active Object", activeObject, overrideOptions);
+                    }
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        UpdateObjectOverride();
+                    }
+
+                    EditorGUILayout.Space(20);
+
+                    EditorGUI.BeginChangeCheck();
+                    frameRate = EditorGUILayout.FloatField("Framerate", frameRate);
+                    aspectRatio = EditorGUILayout.Vector2Field("Aspect Ratio", aspectRatio);
+                    focalLength = EditorGUILayout.Slider("Focal Length", focalLength, 10.0f, 200.0f);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        UpdateCameraSettings();
+                    }
                 }
 
                 EditorGUILayout.Space(20);
 
-                EditorGUI.BeginChangeCheck();
-                frameRate = EditorGUILayout.FloatField("Framerate", frameRate);
-                sensorSize = EditorGUILayout.Vector2Field("Sensor Size", sensorSize);
-                aspectRatio = EditorGUILayout.Vector2Field("Aspect Ratio", aspectRatio);
-                focalLength = EditorGUILayout.Slider("Focal Length", focalLength, 10.0f, 200.0f);
-                if (EditorGUI.EndChangeCheck())
+                if (!recording)
                 {
-                    UpdateCameraSettings();
+                    if (GUILayout.Button("Start Recording"))
+                    {
+                        StartRecording();
+                    }
+                }
+                else
+                {
+                    if (GUILayout.Button("Stop Recording"))
+                    {
+                        StopRecording();
+                    }
                 }
             }
 
             EditorGUILayout.Space(20);
 
-            if (!recording)
+            using (new EditorGUI.DisabledScope(mode != 2))
             {
-                if (GUILayout.Button("Start Recording"))
+                EditorGUI.BeginChangeCheck();
+                animation = EditorGUILayout.Popup("Animation", animation, animationOptions);
+                if (EditorGUI.EndChangeCheck())
                 {
-                    StartRecording();
+                    ToggleAnimation();
                 }
-            }
-            else
-            {
-                if (GUILayout.Button("Stop Recording"))
+
+                EditorGUILayout.Space(10);
+
+                using (new EditorGUI.DisabledScope(animationOptions != null))
                 {
-                    StopRecording();
+                    if (GUILayout.Button("Delete Animation"))
+                    {
+                        DeleteAnimation();
+                    }
                 }
+
+                
             }
-            
         }
     }
 
@@ -108,13 +145,17 @@ public class VRCTShortcuts : EditorWindow
         viewportCamera = virtualViewport.GetComponent<Camera>();
         aspectRatioManager = virtualViewport.GetComponent<AspectRatioManager>();
         animationRecorder = rig.GetComponent<AnimationRecorder>();
+        animationManager = rig.GetComponent<AnimationManager>();
         modeManager = rig.GetComponent<ModeManager>();
+        lineContainer = gameObjectIndex.lineContainer;
 
         overrideOptions = new string[gameObjectIndex.activeObjectOverrides.Count];
         for (int index = 0; index < gameObjectIndex.activeObjectOverrides.Count; index++)
         {
             overrideOptions[index] = gameObjectIndex.activeObjectOverrides[index].name;
         }
+
+        ResetMode();
     }
 
     private void StartRecording()
@@ -131,10 +172,50 @@ public class VRCTShortcuts : EditorWindow
         animationRecorder.StopRecording();
     }
 
+    private void SwitchMode()
+    {
+        if (mode == 0)
+        {
+            modeManager.interactionMode = ModeManager.InteractionMode.exploration;
+            modeManager.ActivateScript(modeManager.interactionMode);
+        }
+        else if (mode == 1)
+        {
+            modeManager.interactionMode = ModeManager.InteractionMode.recording;
+            modeManager.ActivateScript(modeManager.interactionMode);
+        }
+        else if (mode == 2)
+        {
+            modeManager.interactionMode = ModeManager.InteractionMode.visualizing;
+            modeManager.ActivateScript(modeManager.interactionMode);
+
+            List<GameObject> objectList = new List<GameObject>();
+            foreach (Transform item in lineContainer.gameObject.transform)
+            {
+                objectList.Add(item.gameObject);
+            }
+
+            animationOptions = new string[objectList.Count];
+            for (int index = 0; index < objectList.Count; index++)
+            {
+                animationOptions[index] = objectList[index].name;
+            }
+        }
+    }
+
+    private void ToggleAnimation()
+    {
+        animationManager.ToggleVisibility(animationOptions[animation]);
+    }
+
+    private void DeleteAnimation()
+    {
+        animationManager.DeleteAnimation(animationOptions[animation]);
+    }
+
     private void UpdateCameraSettings()
     {
         animationRecorder.SetFramerate(frameRate);
-        viewportCamera.sensorSize = sensorSize;
         aspectRatioManager.aspectRatio = aspectRatio.x / aspectRatio.y;
         viewportCamera.focalLength = focalLength;
         Debug.Log("Updated Camera");
@@ -156,5 +237,9 @@ public class VRCTShortcuts : EditorWindow
         {
             return false;
         }
+    }
+
+    private void ResetMode(){
+        mode = 0;
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine.XR;
 
 public class ViewportManager : MonoBehaviour
 {
+    public GameObject vrCamera;
     public XRNode leftInputDevice;
     public XRNode rightInputDevice;
     public InputHelpers.Button activationButton;
@@ -24,12 +25,13 @@ public class ViewportManager : MonoBehaviour
     public TMP_Dropdown framerateDropdown;
     public TMP_Dropdown aspectRatioDropdown;
     public TMP_Dropdown focalLengthDropdown;
+    public AnimationRecorder animationRecorder;
+    public AspectRatioManager aspectRatioManager;
+    public GameObject defaultViewportPosition;
+    public RenderTexture viewportRenderTexture;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
-    private GameObject vrCamera;
-    private AnimationRecorder animationRecorder;
-    private AspectRatioManager aspectRatioManager;
     private static Color defaultColor = Color.white;
     private static Color recordingColor = Color.red;
     private float[] framerates = new float[]{24f, 25f, 30f, 50f, 60f, 120f};
@@ -53,10 +55,6 @@ public class ViewportManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        vrCamera = GameObject.FindWithTag("MainCamera");
-        animationRecorder = GetComponent<AnimationRecorder>();
-        aspectRatioManager = viewportCamera.GetComponent<AspectRatioManager>();
-
         VariableSetup();
         UpdateCameraSettings();
         DisableScript();
@@ -135,6 +133,10 @@ public class ViewportManager : MonoBehaviour
             newOption.text = item.ToString();
             focalLengthDropdown.options.Add(newOption);
         }
+
+        framerateDropdown.RefreshShownValue();
+        aspectRatioDropdown.RefreshShownValue();
+        focalLengthDropdown.RefreshShownValue();
     }
 
     public void UpdateCameraSettings()
@@ -181,8 +183,8 @@ public class ViewportManager : MonoBehaviour
 
     public void ResetViewportPosition()
     {
-        Vector3 defaultPosition = vrCamera.transform.position + new Vector3(0f, -0.2f, 0.5f);
-        virtualViewport.gameObject.transform.position = defaultPosition;
+        virtualViewport.transform.position = defaultViewportPosition.transform.position;
+        virtualViewport.transform.rotation = defaultViewportPosition.transform.rotation;
     }
 
     void ToggleVisibility()

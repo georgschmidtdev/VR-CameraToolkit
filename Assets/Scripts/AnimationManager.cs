@@ -20,12 +20,13 @@ public class AnimationManager : MonoBehaviour
     public GameObject previewContainer;
     public GameObject playbackPanel;
     public GameObject animationBrowser;
-    public GameObject animationBrowserList;
     public GameObject listEntryPrefab;
     public GameObject cameraPreviewCanvas;
     public RenderTexture cameraPreviewCanvasRenderTexture;
     public RenderTexture defaultRenderTexture;
     public float lineWidth = 0.025f;
+    public TMP_Dropdown previewDropdown;
+    public LayerManager layerManager;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
@@ -147,31 +148,23 @@ public class AnimationManager : MonoBehaviour
             previewOverrideController["DefaultAnimation"] = item.Key;
 
             AspectRatioManager currentAspectRatioManager = currentPreview.GetComponent<AspectRatioManager>();
-            currentPreview.GetComponent<Camera>().aspect = currentAspectRatioManager.GetAspectRatio();
+            Camera currentPreviewCamera = currentPreview.GetComponent<Camera>();
+            currentPreviewCamera.aspect = currentAspectRatioManager.GetAspectRatio();
+            currentPreviewCamera.cullingMask = layerManager.GetLayerMask();
         }
     }
 
     private void UpdateAnimationBrowser()
     // Populate animation browser for visualized animations
     {
-        List<GameObject> animationList = new List<GameObject>();
-        GameObject currentListEntry;
-        TextMeshProUGUI currentEntryName;
-
         foreach (var item in clipDictionary)
         {
-            currentListEntry = Instantiate(listEntryPrefab, animationBrowserList.transform, false);
-            currentEntryName = currentListEntry.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-
-            currentListEntry.name = item.Key.name;
-            currentEntryName.text = item.Key.name;
-            animationList.Add(currentListEntry);
+            TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
+            newOption.text = item.Key.name;
+            previewDropdown.options.Add(newOption);
         }
 
-        for (int i = 0; i < animationList.Count; i++)
-        {
-            animationList[i].GetComponent<RectTransform>().localPosition = new Vector3(0, - i * 0.1f, 0);
-        }
+        previewDropdown.RefreshShownValue();
     }
 
     void VisualizeAnimation()
@@ -311,9 +304,10 @@ public class AnimationManager : MonoBehaviour
         {
             DeleteAnimationVisualizer(item.Key.name);
             DeleteAnimationPreview(item.Key.name);
-            DeleteBrowserEntry(item.Key.name);
         }
 
+        DeleteBrowserEntry();
+        
         // Reset all indexed animations
         clipDictionary = null;
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
@@ -350,20 +344,23 @@ public class AnimationManager : MonoBehaviour
         DeleteDictionaryEntry(name);
         DeleteAnimationVisualizer(name);
         DeleteAnimationPreview(name);
-        DeleteBrowserEntry(name);
         DeleteAnimationFile(name);
+        DeleteBrowserEntry();
         UpdateAnimationBrowser();
     }
 
     void DeleteDictionaryEntry(string name)
     {
+        AnimationClip clipToDelete = new AnimationClip();
         foreach (var item in clipDictionary)
         {
             if (item.Key.name == name)
             {
-                clipDictionary.Remove(item.Key);
+                clipToDelete = item.Key;
             }
         }
+
+        clipDictionary.Remove(clipToDelete);
     }
 
     void DeleteAnimationVisualizer(string name)
@@ -390,9 +387,9 @@ public class AnimationManager : MonoBehaviour
         }
     }
 
-    void DeleteBrowserEntry(string name)
+    void DeleteBrowserEntry()
     {
-        Destroy(animationBrowserList.gameObject.transform.Find(name).gameObject);
+        previewDropdown.ClearOptions();
     }
 
     void DeleteAnimationFile(string name)
