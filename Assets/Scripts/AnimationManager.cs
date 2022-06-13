@@ -163,25 +163,6 @@ public class AnimationManager : MonoBehaviour
         }
 
         previewDropdown.RefreshShownValue();
-
-        /**List<GameObject> animationList = new List<GameObject>();
-        GameObject currentListEntry;
-        TextMeshProUGUI currentEntryName;
-
-        foreach (var item in clipDictionary)
-        {
-            currentListEntry = Instantiate(listEntryPrefab, animationBrowserList.transform, false);
-            currentEntryName = currentListEntry.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-
-            currentListEntry.name = item.Key.name;
-            currentEntryName.text = item.Key.name;
-            animationList.Add(currentListEntry);
-        }
-
-        for (int i = 0; i < animationList.Count; i++)
-        {
-            animationList[i].GetComponent<RectTransform>().localPosition = new Vector3(0, - i * 0.1f, 0);
-        }**/
     }
 
     void VisualizeAnimation()
