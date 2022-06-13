@@ -304,9 +304,10 @@ public class AnimationManager : MonoBehaviour
         {
             DeleteAnimationVisualizer(item.Key.name);
             DeleteAnimationPreview(item.Key.name);
-            DeleteBrowserEntry(item.Key.name);
         }
 
+        DeleteBrowserEntry();
+        
         // Reset all indexed animations
         clipDictionary = null;
         clipDictionary = new Dictionary<AnimationClip, List<Vector3>>();
@@ -344,6 +345,7 @@ public class AnimationManager : MonoBehaviour
         DeleteAnimationVisualizer(name);
         DeleteAnimationPreview(name);
         DeleteAnimationFile(name);
+        DeleteBrowserEntry();
         UpdateAnimationBrowser();
     }
 
@@ -385,7 +387,7 @@ public class AnimationManager : MonoBehaviour
         }
     }
 
-    void DeleteBrowserEntry(string name)
+    void DeleteBrowserEntry()
     {
         previewDropdown.ClearOptions();
     }
