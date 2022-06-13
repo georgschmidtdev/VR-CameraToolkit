@@ -2839,7 +2839,6 @@ MonoBehaviour:
   previewContainer: {fileID: 986511260}
   playbackPanel: {fileID: 707014048}
   animationBrowser: {fileID: 142599954}
-  animationBrowserList: {fileID: 0}
   listEntryPrefab: {fileID: 7280107410858242141, guid: 950aa25fd7194924c9be4d6e49f98c56,
     type: 3}
   cameraPreviewCanvas: {fileID: 195237008}

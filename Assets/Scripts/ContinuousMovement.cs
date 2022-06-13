@@ -10,7 +10,7 @@ public class ContinuousMovement : MonoBehaviour
 
     public float movementSpeedMultiplier = 3.0f;
     public float gravity = -9.81f;
-    public float inputThreshold = 0.2f;
+    public float inputThreshold = 0.1f;
     public LayerMask collisionLayerMask;
     public XRNode inputSource;
     public CharacterController character;
