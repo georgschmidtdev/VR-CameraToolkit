@@ -33,7 +33,7 @@ public class TwoHandedGrabInteractable : XRGrabInteractable
 
             // Change object rotation based on the interactors (controllers) rotation
             //firstInteractorSelecting.transform.rotation = CalculateRotation() * Quaternion.Euler(0f, 90f, 0f);
-            gameObject.transform.rotation = CalculateRotation()* Quaternion.Euler(90f, 90f, 0f);
+            gameObject.transform.rotation = CalculateRotation()* Quaternion.Euler(0f, 90f, 0f);
             gameObject.transform.position = CalculatePosition();
         }
 
