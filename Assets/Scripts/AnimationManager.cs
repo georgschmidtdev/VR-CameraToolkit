@@ -26,6 +26,7 @@ public class AnimationManager : MonoBehaviour
     public RenderTexture cameraPreviewCanvasRenderTexture;
     public RenderTexture defaultRenderTexture;
     public float lineWidth = 0.025f;
+    public TMP_Dropdown previewDropdown;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
@@ -154,7 +155,16 @@ public class AnimationManager : MonoBehaviour
     private void UpdateAnimationBrowser()
     // Populate animation browser for visualized animations
     {
-        List<GameObject> animationList = new List<GameObject>();
+        foreach (var item in clipDictionary)
+        {
+            TMP_Dropdown.OptionData newOption = new TMP_Dropdown.OptionData();
+            newOption.text = item.Key.name;
+            previewDropdown.options.Add(newOption);
+        }
+
+        previewDropdown.RefreshShownValue();
+
+        /**List<GameObject> animationList = new List<GameObject>();
         GameObject currentListEntry;
         TextMeshProUGUI currentEntryName;
 
@@ -171,7 +181,7 @@ public class AnimationManager : MonoBehaviour
         for (int i = 0; i < animationList.Count; i++)
         {
             animationList[i].GetComponent<RectTransform>().localPosition = new Vector3(0, - i * 0.1f, 0);
-        }
+        }**/
     }
 
     void VisualizeAnimation()

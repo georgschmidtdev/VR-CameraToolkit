@@ -28,6 +28,7 @@ public class ViewportManager : MonoBehaviour
     public AnimationRecorder animationRecorder;
     public AspectRatioManager aspectRatioManager;
     public GameObject defaultViewportPosition;
+    public RenderTexture viewportRenderTexture;
 
     private bool scriptIsEnabled = false;
     private bool wasActivated = false;
